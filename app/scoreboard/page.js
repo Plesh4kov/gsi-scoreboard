@@ -1,4 +1,5 @@
 'use client';
+
 import { useEffect, useState } from 'react';
 
 export default function ScoreboardPage() {
@@ -38,28 +39,34 @@ export default function ScoreboardPage() {
 
   const ctTeam = matchData.map.team_ct;
   const tTeam = matchData.map.team_t;
-
   const allPlayers = matchData.allplayers;
-  const playersArray = Object.values(allPlayers);
+
+  // Преобразуем allPlayers в массив с включением steamid
+  // Ключи allplayers - это steamid, используем их для фото
+  const playersArray = Object.entries(allPlayers).map(([steamid, playerData]) => ({
+    steamid,
+    ...playerData
+  }));
 
   let ctPlayers = playersArray.filter(p => p.team === 'CT');
   let tPlayers = playersArray.filter(p => p.team === 'T');
 
+  // Сортируем по количеству убийств
   ctPlayers.sort((a, b) => b.match_stats.kills - a.match_stats.kills);
   tPlayers.sort((a, b) => b.match_stats.kills - a.match_stats.kills);
 
   return (
     <div className="scoreboard-container">
       <div className="scoreboard-header">
-        <div className="match-score-block">
-          <div className="score-line">
-            <div className="team-info ct-side">
+        <div className="match-info">
+          <div className="team-scores">
+            <div className="team-block ct-side">
               <img alt="CT Team" className="team-logo" src={`teams/${ctTeam.name}.png`} />
               <span className="team-name">{ctTeam.name}</span>
               <span className="score ct">{ctTeam.score}</span>
             </div>
-            <span className="score-divider">:</span>
-            <div className="team-info t-side">
+            <div className="score-divider">:</div>
+            <div className="team-block t-side">
               <span className="score t">{tTeam.score}</span>
               <span className="team-name">{tTeam.name}</span>
               <img alt="T Team" className="team-logo" src={`teams/${tTeam.name}.png`} />
@@ -70,140 +77,25 @@ export default function ScoreboardPage() {
       </div>
 
       <div className="teams-wrapper">
-        {/* CT TABLE */}
-        <div className="team-table ct-side">
-          <div className="table-header">
-            <div className="th player-col player-name">{ctTeam.name}</div>
-            <div className="th stat-col">K</div>
-            <div className="th stat-col">D</div>
-            <div className="th stat-col">A</div>
-            <div className="th stat-col">+/-</div>
-            <div className="th stat-col">Score</div>
-            <div className="th stat-col">MVP</div>
-            <div className="th stat-col">HP</div>
-            <div className="th stat-col">Armor</div>
-            <div className="th stat-col">Helmet</div>
-            <div className="th stat-col">$</div>
-            <div className="th stat-col">EquipVal</div>
-            <div className="th stat-col">R.Kills</div>
-            <div className="th stat-col">R.HS</div>
-            <div className="th stat-col">Weapon</div>
+        {/* Блок для CT-команды */}
+        <div className="team-row">
+          <div className="team-header ct-side">
+            <img alt="CT Team" className="team-logo-header" src={`teams/${ctTeam.name}.png`} />
+            <span className="team-name-header">{ctTeam.name}</span>
           </div>
-          <div className="players-table">
-            {ctPlayers.map((player, i) => {
-              const { kills, assists, deaths, mvps, score } = player.match_stats;
-              const plusMinus = kills - deaths;
-              const state = player.state || {};
-              const health = state.health ?? '-';
-              const armor = state.armor ?? '-';
-              const helmet = state.helmet ? 'Yes' : 'No';
-              const money = state.money ?? '-';
-              const equipValue = state.equip_value ?? '-';
-              const roundKills = state.round_kills ?? '-';
-              const roundKillHS = state.round_killhs ?? '-';
-
-              // Определяем активное оружие
-              let activeWeapon = '-';
-              if (player.weapons) {
-                for (const wKey in player.weapons) {
-                  if (player.weapons[wKey].state === 'active') {
-                    activeWeapon = wKey;
-                    break;
-                  }
-                }
-              }
-
-              return (
-                <div className="player-row" key={i}>
-                  <div className="player-col player-name">{player.name}</div>
-                  <div className="stat-col">{kills}</div>
-                  <div className="stat-col">{deaths}</div>
-                  <div className="stat-col">{assists}</div>
-                  <div className="stat-col">{(plusMinus >= 0 ? '+' : '') + plusMinus}</div>
-                  <div className="stat-col">{score}</div>
-                  <div className="stat-col">{mvps ?? 0}</div>
-                  <div className="stat-col">{health}</div>
-                  <div className="stat-col">{armor}</div>
-                  <div className="stat-col">{helmet}</div>
-                  <div className="stat-col">{money}</div>
-                  <div className="stat-col">{equipValue}</div>
-                  <div className="stat-col">{roundKills}</div>
-                  <div className="stat-col">{roundKillHS}</div>
-                  <div className="stat-col">{activeWeapon}</div>
-                </div>
-              );
-            })}
+          <div className="players-row">
+            {ctPlayers.map((player, i) => renderPlayerCard(player))}
           </div>
         </div>
 
-        {/* ROUND HISTORY */}
-        <div className="round-history">
-          <div className="round-history-title">Round History</div>
-          {renderRoundHistory(matchData.map.round_wins)}
-        </div>
-
-        {/* T TABLE */}
-        <div className="team-table t-side">
-          <div className="table-header">
-            <div className="th player-col player-name">{tTeam.name}</div>
-            <div className="th stat-col">K</div>
-            <div className="th stat-col">D</div>
-            <div className="th stat-col">A</div>
-            <div className="th stat-col">+/-</div>
-            <div className="th stat-col">Score</div>
-            <div className="th stat-col">MVP</div>
-            <div className="th stat-col">HP</div>
-            <div className="th stat-col">Armor</div>
-            <div className="th stat-col">Helmet</div>
-            <div className="th stat-col">$</div>
-            <div className="th stat-col">EquipVal</div>
-            <div className="th stat-col">R.Kills</div>
-            <div className="th stat-col">R.HS</div>
-            <div className="th stat-col">Weapon</div>
+        {/* Блок для T-команды */}
+        <div className="team-row">
+          <div className="team-header t-side">
+            <img alt="T Team" className="team-logo-header" src={`teams/${tTeam.name}.png`} />
+            <span className="team-name-header">{tTeam.name}</span>
           </div>
-          <div className="players-table">
-            {tPlayers.map((player, i) => {
-              const { kills, assists, deaths, mvps, score } = player.match_stats;
-              const plusMinus = kills - deaths;
-              const state = player.state || {};
-              const health = state.health ?? '-';
-              const armor = state.armor ?? '-';
-              const helmet = state.helmet ? 'Yes' : 'No';
-              const money = state.money ?? '-';
-              const equipValue = state.equip_value ?? '-';
-              const roundKills = state.round_kills ?? '-';
-              const roundKillHS = state.round_killhs ?? '-';
-
-              let activeWeapon = '-';
-              if (player.weapons) {
-                for (const wKey in player.weapons) {
-                  if (player.weapons[wKey].state === 'active') {
-                    activeWeapon = wKey;
-                    break;
-                  }
-                }
-              }
-
-              return (
-                <div className="player-row" key={i}>
-                  <div className="player-col player-name">{player.name}</div>
-                  <div className="stat-col">{kills}</div>
-                  <div className="stat-col">{deaths}</div>
-                  <div className="stat-col">{assists}</div>
-                  <div className="stat-col">{(plusMinus >= 0 ? '+' : '') + plusMinus}</div>
-                  <div className="stat-col">{score}</div>
-                  <div className="stat-col">{mvps ?? 0}</div>
-                  <div className="stat-col">{health}</div>
-                  <div className="stat-col">{armor}</div>
-                  <div className="stat-col">{helmet}</div>
-                  <div className="stat-col">{money}</div>
-                  <div className="stat-col">{equipValue}</div>
-                  <div className="stat-col">{roundKills}</div>
-                  <div className="stat-col">{roundKillHS}</div>
-                  <div className="stat-col">{activeWeapon}</div>
-                </div>
-              );
-            })}
+          <div className="players-row">
+            {tPlayers.map((player, i) => renderPlayerCard(player))}
           </div>
         </div>
       </div>
@@ -212,7 +104,7 @@ export default function ScoreboardPage() {
         body {
           margin: 0;
           padding: 0;
-          background: #222;
+          background: #1c1b29;
           font-family: Arial, sans-serif;
           color: #fff;
         }
@@ -221,260 +113,197 @@ export default function ScoreboardPage() {
           width: 1200px;
           max-width: 90%;
           margin: 30px auto;
-          background: rgba(15,15,15,0.9);
+          background: #201c2c;
           border-radius: 8px;
           padding: 20px;
-          backdrop-filter: blur(5px);
           box-shadow: 0 0 20px rgba(0,0,0,0.5);
         }
 
         .scoreboard-header {
           margin-bottom: 25px;
           padding-bottom: 15px;
-          border-bottom: 1px solid #555;
+          border-bottom: 1px solid #444;
           display: flex;
-          justify-content: center;
+          flex-direction: column;
           align-items: center;
           text-align: center;
         }
 
-        .match-score-block {
+        .match-info {
           display: flex;
           flex-direction: column;
           align-items: center;
+          gap: 10px;
         }
 
-        .score-line {
+        .team-scores {
           display: flex;
-          align-items: center;
-          font-size: 25px;
-          font-weight: bold;
-          justify-content: center;
-          gap: 40px; 
-        }
-
-        .team-info {
-          display: flex;
-          align-items: center;
           gap: 20px;
-          justify-content: center;
+          align-items: center;
+          font-size: 28px;
+          font-weight: bold;
+        }
+
+        .team-block {
+          display: flex;
+          align-items: center;
+          gap: 15px;
+        }
+
+        .team-block .team-name {
+          text-transform: uppercase;
+          font-size: 24px;
         }
 
         .ct-side .team-name {
-          color: #6E58AB;
+          color: #c94af1;
         }
 
         .t-side .team-name {
-          color: #998959;
+          color: #e0bf75;
         }
 
         .team-logo {
-          width: 40px;
-          height: 40px;
+          width: 50px;
+          height: 50px;
           object-fit: contain;
         }
 
         .score-divider {
+          font-size: 32px;
           color: #aaa;
-          font-size: 36px;
         }
 
         .map-info {
-          margin-top: 5px;
-          font-size: 16px;
+          font-size: 18px;
           color: #ccc;
-          text-align: center;
-          width: 100%;
         }
 
         .teams-wrapper {
           display: flex;
           flex-direction: column;
-          gap: 20px;
+          gap: 40px;
           margin-top: 20px;
         }
 
-        .team-table {
-          background: rgba(0,0,0,0.3);
+        .team-row {
+          background: #2a2440;
+          padding: 20px;
           border-radius: 8px;
-          padding: 10px;
-          overflow-x: auto;
         }
 
-        .table-header {
-          display: flex;
-          padding: 5px 0;
-          border-bottom: 1px solid #555;
-          min-width: 1000px; /* увеличиваем минимальную ширину для большого числа колонок */
-        }
-
-        .th {
-          flex: 1;
-          text-align: center;
-          font-weight: bold;
-          color: #ccc;
-          text-transform: uppercase;
-          padding: 5px;
-          font-size: 12px;
-        }
-
-        .player-col {
-          flex: 2;
-          text-align: center;
-        }
-
-        .stat-col {
-          flex: 1;
-          text-align: center;
-        }
-
-        .players-table {
-          border-radius: 0 0 8px 8px;
-          padding: 10px;
-          font-size: 12px;
-          min-width: 1000px; /* чтобы столбцы поместились */
-        }
-
-        .player-row {
-          display: flex;
-          border-bottom: 1px solid #333;
-          padding: 8px 0;
-          align-items: center;
-        }
-
-        .player-row:last-child {
-          border-bottom: none;
-        }
-
-        .player-row div {
-          padding: 5px 0;
-        }
-
-        .player-name {
-          text-align: center;
-          flex: 2;
-        }
-
-        .round-history-title {
-          font-size: 16px;
-          color: #ccc;
-          margin-bottom: 10px;
-          text-align: center;
-          font-weight: bold;
-          text-transform: uppercase;
-        }
-
-        .halves-container {
-          position: relative;
-          width: 100%;
+        .team-header {
           display: flex;
           align-items: center;
-        }
-
-        .half-rounds {
-          display: flex;
-          flex-wrap: wrap;
           gap: 10px;
-          flex: 1;
+          margin-bottom: 20px;
         }
 
-        .half-rounds:first-child {
-          justify-content: flex-end;
-          margin-right: 20px; 
+        .team-logo-header {
+          width: 40px;
+          height: 40px;
+          object-fit: contain;
         }
 
-        .half-rounds:last-child {
-          justify-content: flex-start;
-          margin-left: 20px; 
+        .team-name-header {
+          text-transform: uppercase;
+          font-size: 20px;
+          font-weight: bold;
         }
 
-        .rounds-divider {
-          position: absolute;
-          left: 50%;
-          transform: translateX(-50%);
-          width: 1px;
-          background: #ccc;
-          height: 30px;
+        .ct-side .team-name-header {
+          color: #c94af1;
         }
 
-        .round-wrapper {
+        .t-side .team-name-header {
+          color: #e0bf75;
+        }
+
+        .players-row {
+          display: flex;
+          gap: 20px;
+          flex-wrap: wrap;
+          justify-content: start;
+        }
+
+        .player-card {
+          background: #3a3357;
+          border-radius: 8px;
+          padding: 15px;
+          width: 140px;
           display: flex;
           flex-direction: column;
           align-items: center;
+          text-align: center;
         }
 
-        .round-icon {
-          width: 16px;
-          height: 16px;
-          object-fit: contain;
-          margin: 0 3px;
+        .player-card img {
+          width: 60px;
+          height: 60px;
+          border-radius: 50%;
+          object-fit: cover;
+          margin-bottom: 10px;
+          border: 2px solid #555;
         }
 
-        .round-number {
-          font-size: 10px;
-          color: #ccc;
-          margin-top: 2px;
+        .player-name {
+          font-size: 14px;
+          font-weight: bold;
+          margin-bottom: 8px;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          max-width: 100%;
+        }
+
+        .player-stats {
+          font-size: 12px;
+          display: flex;
+          flex-direction: column;
+          gap: 4px;
+        }
+
+        .player-stats div {
+          display: flex;
+          justify-content: space-between;
+        }
+
+        .stat-label {
+          color: #bbb;
+        }
+
+        .stat-value {
+          font-weight: bold;
         }
       `}</style>
     </div>
   );
 }
 
-function renderRoundHistory(roundWins) {
-  if (!roundWins) return null;
+function renderPlayerCard(player) {
+  const { name, steamid } = player;
+  const { kills, deaths, assists } = player.match_stats;
+  // KD ratio
+  const kd = deaths === 0 ? kills.toString() : (kills/deaths).toFixed(2);
 
-  const roundNumbers = Object.keys(roundWins).map(n => parseInt(n)).sort((a,b) => a - b);
-  const firstHalfRounds = roundNumbers.filter(n => n <= 12);
-  const secondHalfRounds = roundNumbers.filter(n => n > 12);
-
-  return (
-    <div className="halves-container">
-      <div className="half-rounds">
-        {firstHalfRounds.map(roundNumber => createRoundIcon(roundNumber, roundWins[roundNumber.toString()]))}
-      </div>
-      <div className="rounds-divider"></div>
-      <div className="half-rounds">
-        {secondHalfRounds.map(roundNumber => createRoundIcon(roundNumber, roundWins[roundNumber.toString()]))}
-      </div>
-    </div>
-  );
-}
-
-function createRoundIcon(roundNumber, result) {
-  let iconPath;
-  let teamColorClass;
-
-  switch (result) {
-    case 't_win_elimination':
-        iconPath = 'icons/t_win_elimination.png';
-        teamColorClass = 't-win';
-        break;
-    case 't_win_bomb':
-        iconPath = 'icons/t_win_bomb.png';
-        teamColorClass = 't-win';
-        break;
-    case 'ct_win_elimination':
-        iconPath = 'icons/ct_win_elimination.png';
-        teamColorClass = 'ct-win';
-        break;
-    case 'ct_win_defuse':
-        iconPath = 'icons/ct_win_defuse.png';
-        teamColorClass = 'ct-win';
-        break;
-    case 'ct_win_time':
-        iconPath = 'icons/ct_win_time.png';
-        teamColorClass = 'ct-win';
-        break;
-    default:
-        iconPath = 'icons/default.png';
-        teamColorClass = '';
-        break;
-  }
+  // Заглушки для ADR, KAST, Damage
+  const ADR = 'N/A';
+  const KAST = 'N/A';
+  const Damage = 'N/A';
 
   return (
-    <div className="round-wrapper" key={roundNumber}>
-      <img src={iconPath} alt={result} className={`round-icon ${teamColorClass}`} title={`Round ${roundNumber}: ${result}`} />
-      <span className="round-number">{roundNumber}</span>
+    <div className="player-card" key={steamid}>
+      <img src={`/players/${steamid}.jpg`} alt={name} onError={(e) => { e.currentTarget.src = '/players/default.jpg'; }} />
+      <div className="player-name">{name}</div>
+      <div className="player-stats">
+        <div><span className="stat-label">K:</span><span className="stat-value">{kills}</span></div>
+        <div><span className="stat-label">D:</span><span className="stat-value">{deaths}</span></div>
+        <div><span className="stat-label">A:</span><span className="stat-value">{assists}</span></div>
+        <div><span className="stat-label">KD:</span><span className="stat-value">{kd}</span></div>
+        <div><span className="stat-label">ADR:</span><span className="stat-value">{ADR}</span></div>
+        <div><span className="stat-label">KAST:</span><span className="stat-value">{KAST}</span></div>
+        <div><span className="stat-label">Damage:</span><span className="stat-value">{Damage}</span></div>
+      </div>
     </div>
   );
 }
