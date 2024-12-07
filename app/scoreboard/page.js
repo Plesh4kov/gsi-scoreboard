@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Image from 'next/image'; // Используем next/image вместо img
 
 export default function ScoreboardPage() {
   const [matchData, setMatchData] = useState(null);
@@ -62,13 +63,13 @@ export default function ScoreboardPage() {
 
       <div className="teams-line">
         <div className="team-info-line ct-side">
-          <img alt="CT Team" src={`/teams/${ctTeam.name}.png`} className="team-logo"/>
+          <Image alt="CT Team" src={`/teams/${ctTeam.name}.png`} width={30} height={30} className="team-logo"/>
           <span className="team-name">{ctTeam.name.toUpperCase()}</span>
         </div>
         <div className="score-middle">{ctTeam.score} - {tTeam.score}</div>
         <div className="team-info-line t-side">
           <span className="team-name">{tTeam.name.toUpperCase()}</span>
-          <img alt="T Team" src={`/teams/${tTeam.name}.png`} className="team-logo"/>
+          <Image alt="T Team" src={`/teams/${tTeam.name}.png`} width={30} height={30} className="team-logo"/>
         </div>
       </div>
 
@@ -297,7 +298,6 @@ export default function ScoreboardPage() {
           flex-shrink:0;
         }
 
-        /* Фиксированный размер раундов */
         .round-wrapper {
           width: 30px; 
           height: 50px;
@@ -320,9 +320,8 @@ export default function ScoreboardPage() {
           background: #998959;
         }
 
-        /* Пустые раунды (без данных) до 24 */
         .round-wrapper.empty {
-          background: #2f2b3c; /* более тёмный фон для пустой ячейки */
+          background: #2f2b3c;
         }
 
         .round-icon {
@@ -350,10 +349,12 @@ function renderPlayerRow(player) {
   return (
     <div className="player-row" key={steamid}>
       <div className="player-name-wrapper">
-        <img 
+        <Image 
           className="player-img"
-          src={`/players/${lowercaseSteamId}.png`} 
+          src={`/players/${lowercaseSteamId}.png`}
           alt={name}
+          width={40}
+          height={40}
           onError={(e) => { e.currentTarget.src = '/players/idle.png'; }}
         />
         <div className="player-name">{name}</div>
@@ -366,26 +367,9 @@ function renderPlayerRow(player) {
 }
 
 function renderRoundHistory(roundWins) {
-  const maxRounds = 24;
-  const roundNumbers = Object.keys(roundWins)
-    .map(n => parseInt(n))
-    .sort((a,b) => a - b);
-
-  // Формируем массив от 1 до 12 для первой половины
+  const totalRounds = 24; // до 24 раундов
   const firstHalfRounds = Array.from({length: 12}, (_,i)=>i+1);
-  // Формируем массив от 13 до 24 для второй половины
   const secondHalfRounds = Array.from({length: 12}, (_,i)=>i+13);
-
-  if (roundNumbers.length === 0) {
-    // Если нет сыгранных раундов, всё будет пустым
-    return (
-      <div className="halves-container">
-        {firstHalfRounds.map(r => createRoundCell(r, null))}
-        <div className="rounds-divider"></div>
-        {secondHalfRounds.map(r => createRoundCell(r, null))}
-      </div>
-    );
-  }
 
   return (
     <div className="halves-container">
@@ -443,7 +427,7 @@ function createRoundCell(roundNumber, result) {
 
   return (
     <div className={`round-wrapper ${roundClass}`} key={roundNumber}>
-      <img src={iconPath} alt={result} className="round-icon" />
+      <Image src={iconPath} alt={result} className="round-icon" width={16} height={16}/>
       <span className="round-number">{roundNumber}</span>
     </div>
   );
