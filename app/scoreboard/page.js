@@ -100,7 +100,7 @@ export default function ScoreboardPage() {
         body {
           margin: 0;
           padding: 0;
-          background: #000;
+          background: transparent; /* Прозрачный фон страницы */
           font-family: Arial, sans-serif;
           color: #fff;
         }
@@ -153,15 +153,8 @@ export default function ScoreboardPage() {
           font-size: 24px;
           font-weight: bold;
           text-transform: uppercase;
-        }
-
-        /* Используем новые цвета для команд */
-        .ct-side .team-name {
-          color: #6E58AB;
-        }
-
-        .t-side .team-name {
-          color: #998959;
+          /* Теперь названия команд белые */
+          color: #fff;
         }
 
         .score-middle {
@@ -177,7 +170,9 @@ export default function ScoreboardPage() {
           justify-content: space-between;
         }
 
-        /* Задаём цвет фона для контейнера команд */
+        /* CT цвет: #6E58AB, T цвет: #998959
+           Оставим фон для наглядности, но не чёрный.
+        */
         .ct-side.team-stat-container {
           background: #6E58AB;
         }
@@ -250,6 +245,7 @@ export default function ScoreboardPage() {
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
+          color: #fff;
         }
 
         .stat-value {
@@ -274,7 +270,7 @@ export default function ScoreboardPage() {
           text-transform: uppercase;
           color: #fff;
           margin-bottom: 20px;
-          text-align: center; /* По центру */
+          text-align: center; /* по центру */
         }
 
         .halves-container {
@@ -306,12 +302,11 @@ export default function ScoreboardPage() {
         .rounds-divider {
           width: 2px;
           background: #ccc;
-          height: 100px; /* побольше */
+          height: 100px;
           margin: 0 30px;
           position: relative;
         }
 
-        /* Увеличиваем размер раундов */
         .round-wrapper {
           width: 40px;
           height: 60px;
@@ -325,7 +320,6 @@ export default function ScoreboardPage() {
           background: #3a3357;
         }
 
-        /* Цвета по сторонам */
         .round-wrapper.ct-win {
           background: #6E58AB; /* CT цвет */
         }
