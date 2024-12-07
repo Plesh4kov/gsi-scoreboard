@@ -53,7 +53,6 @@ export default function ScoreboardPage() {
   let ctPlayers = playersArray.filter(p => p.team === 'CT');
   let tPlayers = playersArray.filter(p => p.team === 'T');
 
-  // Сортируем по убийствам
   ctPlayers.sort((a, b) => b.match_stats.kills - a.match_stats.kills);
   tPlayers.sort((a, b) => b.match_stats.kills - a.match_stats.kills);
 
@@ -63,13 +62,13 @@ export default function ScoreboardPage() {
 
       <div className="teams-line">
         <div className="team-info-line ct-side">
-          <img alt="CT Team" src={`/teams/${ctTeam.name}.png`} width={40} height={40} className="team-logo"/>
+          <img alt="CT Team" src={`/teams/${ctTeam.name}.png`} className="team-logo"/>
           <span className="team-name">{ctTeam.name.toUpperCase()}</span>
         </div>
         <div className="score-middle">{ctTeam.score} - {tTeam.score}</div>
         <div className="team-info-line t-side">
           <span className="team-name">{tTeam.name.toUpperCase()}</span>
-          <img alt="T Team" src={`/teams/${tTeam.name}.png`} width={40} height={40} className="team-logo"/>
+          <img alt="T Team" src={`/teams/${tTeam.name}.png`} className="team-logo"/>
         </div>
       </div>
 
@@ -111,7 +110,7 @@ export default function ScoreboardPage() {
         body {
           margin: 0;
           padding: 0;
-          background: #000; /* Можно сделать фон темнее для контраста */
+          background: #000;
           font-family: 'BLENDERPRO-BOLD', sans-serif;
           color: #fff;
         }
@@ -126,13 +125,13 @@ export default function ScoreboardPage() {
         }
 
         .map-name {
-          font-size: 48px; 
+          font-size: 36px; 
           font-weight: bold;
           color: #fff;
           text-transform: uppercase;
           background: #2e2547;
           border-radius: 8px;
-          padding: 10px 20px; 
+          padding: 5px 15px; 
           text-align: center;
         }
 
@@ -143,30 +142,30 @@ export default function ScoreboardPage() {
           width: 100%;
           background: #2e2547;
           border-radius: 8px;
-          padding: 10px 20px; 
+          padding: 5px 10px; 
         }
 
         .team-info-line {
           display: flex;
           align-items: center;
-          gap: 10px;
+          gap: 5px;
         }
 
         .team-logo {
-          width: 40px;
-          height: 40px;
+          width: 30px;
+          height: 30px;
           object-fit: contain;
         }
 
         .team-name {
-          font-size: 18px;
+          font-size: 14px;
           font-weight: bold;
           text-transform: uppercase;
           color: #fff;
         }
 
         .score-middle {
-          font-size: 36px; 
+          font-size: 24px; 
           font-weight: bold;
           color: #fff;
         }
@@ -174,7 +173,7 @@ export default function ScoreboardPage() {
         .teams-stats-container {
           width: 100%;
           display: flex;
-          gap: 20px;
+          gap: 10px;
           justify-content: space-between;
         }
 
@@ -188,26 +187,26 @@ export default function ScoreboardPage() {
 
         .team-stat-container {
           border-radius: 8px;
-          padding: 10px; 
+          padding: 5px; 
           flex: 1;
           display: flex;
           flex-direction: column;
-          gap: 10px;
+          gap: 5px;
         }
 
         .team-table-header {
           display: grid;
-          grid-template-columns: [player] 1fr [kills] 60px [deaths] 60px [kd] 60px;
+          grid-template-columns: [player] 1fr [kills] 40px [deaths] 40px [kd] 40px;
           text-align: center;
-          gap: 10px;
+          gap: 5px;
           align-items: center;
           background: rgba(0,0,0,0.3);
           border-radius: 4px;
-          padding: 10px;
+          padding: 5px;
         }
 
         .col-header, .col-header-player {
-          font-size: 14px; 
+          font-size: 12px; 
           font-weight: bold;
           text-transform: uppercase;
           color: #fff;
@@ -215,37 +214,37 @@ export default function ScoreboardPage() {
 
         .col-header-player {
           text-align: left;
-          padding-left: 10px;
+          padding-left: 5px;
         }
 
         .player-row {
           display: grid;
-          grid-template-columns: [player] 1fr [kills] 60px [deaths] 60px [kd] 60px;
+          grid-template-columns: [player] 1fr [kills] 40px [deaths] 40px [kd] 40px;
           align-items: center;
           background: rgba(0,0,0,0.2);
-          padding: 10px;
+          padding: 5px;
           border-radius: 8px;
-          gap: 10px;
+          gap: 5px;
         }
 
         .player-img {
-          width: 50px;
-          height: 50px;
-          border-radius: 8px;
+          width: 40px;
+          height: 40px;
+          border-radius: 4px;
           object-fit: contain; 
         }
 
         .player-name-wrapper {
           display: flex;
           align-items: center;
-          gap: 10px;
-          padding-left: 10px;
+          gap: 5px;
+          padding-left: 5px;
           overflow: hidden;
         }
 
         .player-name {
           font-weight: bold;
-          font-size: 14px; 
+          font-size: 12px; 
           text-transform: uppercase;
           white-space: nowrap;
           overflow: hidden;
@@ -255,7 +254,7 @@ export default function ScoreboardPage() {
 
         .stat-value {
           font-weight: bold;
-          font-size: 14px; 
+          font-size: 12px; 
           text-align: center;
           color: #fff;
         }
@@ -264,7 +263,7 @@ export default function ScoreboardPage() {
           width: 100%;
           background: #201c2c;
           border-radius: 8px;
-          padding: 10px;
+          padding: 5px;
           margin-top: 10px;
           box-sizing: border-box;
           display: flex;
@@ -273,11 +272,11 @@ export default function ScoreboardPage() {
         }
 
         .round-history-title {
-          font-size: 14px; 
+          font-size: 12px; 
           font-weight: bold;
           text-transform: uppercase;
           color: #fff;
-          margin-bottom: 10px;
+          margin-bottom: 5px;
           text-align: center;
         }
 
@@ -286,30 +285,31 @@ export default function ScoreboardPage() {
           justify-content: center; 
           align-items: center;
           flex-wrap: wrap;
-          gap: 5px; 
+          gap: 3px; 
           width: 100%;
         }
 
         .rounds-divider {
           width: 2px;
           background: #ccc;
-          height: 50px; 
+          height: 40px; 
           margin: 5px 10px; 
           flex-shrink:0;
         }
 
+        /* Фиксированный размер раундов */
         .round-wrapper {
-          width: 40px; 
-          height: 60px;
+          width: 30px; 
+          height: 50px;
           display: flex;
           flex-direction: column;
           align-items: center;
           justify-content: center;
-          gap: 2px;
+          gap: 0;
           border-radius: 2px;
           background: #3a3357;
           flex-shrink: 0;
-          padding: 2px;
+          padding: 0;
         }
 
         .round-wrapper.ct-win {
@@ -320,14 +320,19 @@ export default function ScoreboardPage() {
           background: #998959;
         }
 
+        /* Пустые раунды (без данных) до 24 */
+        .round-wrapper.empty {
+          background: #2f2b3c; /* более тёмный фон для пустой ячейки */
+        }
+
         .round-icon {
-          width: 20px;
-          height: 20px;
+          width: 16px;
+          height: 16px;
           object-fit: contain;
         }
 
         .round-number {
-          font-size: 12px; 
+          font-size: 10px; 
           color: #fff;
         }
       `}</style>
@@ -349,8 +354,6 @@ function renderPlayerRow(player) {
           className="player-img"
           src={`/players/${lowercaseSteamId}.png`} 
           alt={name}
-          width={50}
-          height={50}
           onError={(e) => { e.currentTarget.src = '/players/idle.png'; }}
         />
         <div className="player-name">{name}</div>
@@ -363,25 +366,52 @@ function renderPlayerRow(player) {
 }
 
 function renderRoundHistory(roundWins) {
+  const maxRounds = 24;
   const roundNumbers = Object.keys(roundWins)
     .map(n => parseInt(n))
     .sort((a,b) => a - b);
 
-  if (roundNumbers.length === 0) return null;
+  // Формируем массив от 1 до 12 для первой половины
+  const firstHalfRounds = Array.from({length: 12}, (_,i)=>i+1);
+  // Формируем массив от 13 до 24 для второй половины
+  const secondHalfRounds = Array.from({length: 12}, (_,i)=>i+13);
 
-  const firstHalfRounds = roundNumbers.filter(n => n <= 12);
-  const secondHalfRounds = roundNumbers.filter(n => n > 12);
+  if (roundNumbers.length === 0) {
+    // Если нет сыгранных раундов, всё будет пустым
+    return (
+      <div className="halves-container">
+        {firstHalfRounds.map(r => createRoundCell(r, null))}
+        <div className="rounds-divider"></div>
+        {secondHalfRounds.map(r => createRoundCell(r, null))}
+      </div>
+    );
+  }
 
   return (
     <div className="halves-container">
-      {firstHalfRounds.map(roundNumber => createRoundCell(roundNumber, roundWins[roundNumber.toString()]))}
+      {firstHalfRounds.map(roundNumber => {
+        const result = roundWins[roundNumber.toString()] || null;
+        return createRoundCell(roundNumber, result);
+      })}
       <div className="rounds-divider"></div>
-      {secondHalfRounds.map(roundNumber => createRoundCell(roundNumber, roundWins[roundNumber.toString()]))}
+      {secondHalfRounds.map(roundNumber => {
+        const result = roundWins[roundNumber.toString()] || null;
+        return createRoundCell(roundNumber, result);
+      })}
     </div>
   );
 }
 
 function createRoundCell(roundNumber, result) {
+  if (!result) {
+    // Пустой раунд
+    return (
+      <div className="round-wrapper empty" key={roundNumber}>
+        <span className="round-number">{roundNumber}</span>
+      </div>
+    );
+  }
+
   const normalizedResult = result.toLowerCase();
   let iconPath;
   let roundClass = '';
