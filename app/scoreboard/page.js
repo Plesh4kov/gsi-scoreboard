@@ -48,90 +48,52 @@ export default function Page() {
     ...playerData
   }));
 
+  // Сортируем и берём по 5 игроков
   let ctPlayers = playersArray.filter(p => p.team === 'CT').sort((a,b)=>b.match_stats.kills - a.match_stats.kills).slice(0,5);
   let tPlayers = playersArray.filter(p => p.team === 'T').sort((a,b)=>b.match_stats.kills - a.match_stats.kills).slice(0,5);
 
   const totalRounds = 24;
   const rounds = Array.from({length: totalRounds}, (_, i) => i+1);
 
-  // Стили для заголовков колонок
-  const colHeaderStyle = {
-    fontSize:'20px',
-    fontWeight:'bold',
-    textTransform:'uppercase',
-    color:'#fff'
-  };
+  // Порядок игроков CT сверху вниз:
+  // 1: playerlongname9 (top)
+  // 2: playerlongname7
+  // 3: playerlongname5
+  // 4: playerlongname3
+  // 5: playerlongname (lowest)
+  // Аналогично для T:
+  // 1: playerlongname10 (top)
+  // 2: playerlongname8
+  // 3: playerlongname6
+  // 4: playerlongname4
+  // 5: playerlongname2 (lowest)
 
-  const playerRowStyle = {
-    display:'grid',
-    gridTemplateColumns:'1fr 30px 30px 40px',
-    columnGap:'20px',
-    alignItems:'center',
-    background:'rgba(0,0,0,0.2)',
-    borderRadius:'0',
-    padding:'10px',
-    boxSizing:'border-box',
-    marginTop:'5px'
-  };
+  // Маппинг строк игроков к переменным:
+  // CT
+  const ctPlayersOrder = [ // индекс:0=top player, ... 
+    {nameClass:".playerlongname9", killsClass:"_0", deathsClass:"_011", adrClass:"_021"},
+    {nameClass:".playerlongname7", killsClass:"_03", deathsClass:"_013", adrClass:"_023"},
+    {nameClass:".playerlongname5", killsClass:"_05", deathsClass:"_015", adrClass:"_025"},
+    {nameClass:".playerlongname3", killsClass:"_07", deathsClass:"_017", adrClass:"_027"},
+    {nameClass:".playerlongname",  killsClass:"_09", deathsClass:"_019", adrClass:"_029"}
+  ];
 
-  const playerNameWrapperStyle = {
-    display:'flex',
-    alignItems:'center',
-    gap:'10px',
-    overflow:'hidden'
-  };
+  // T
+  const tPlayersOrder = [
+    {nameClass:".playerlongname10", killsClass:"_02", deathsClass:"_012", adrClass:"_022"},
+    {nameClass:".playerlongname8",  killsClass:"_04", deathsClass:"_014", adrClass:"_024"},
+    {nameClass:".playerlongname6",  killsClass:"_06", deathsClass:"_016", adrClass:"_026"},
+    {nameClass:".playerlongname4",  killsClass:"_08", deathsClass:"_018", adrClass:"_028"},
+    {nameClass:".playerlongname2",  killsClass:"_010", deathsClass:"_020", adrClass:"_030"}
+  ];
 
-  const playerNameStyle = {
-    fontWeight:'bold',
-    fontSize:'18px',
-    textTransform:'uppercase',
-    whiteSpace:'nowrap',
-    overflow:'hidden',
-    textOverflow:'ellipsis',
-    color:'#fff',
-    fontFamily:'Blender Pro, sans-serif'
-  };
-
-  const statValueStyle = {
-    fontWeight:'bold',
-    fontSize:'18px',
-    textAlign:'center',
-    color:'#fff',
-    fontFamily:'Blender Pro, sans-serif'
-  };
-
-  function renderPlayerRowADR(player) {
-    const { name, steamid, match_stats } = player;
-    const { kills, deaths } = match_stats;
-    const adr = 0; // Нет данных ADR
-    const lowercaseSteamId = steamid.toString().toLowerCase();
-
-    return (
-      <div style={playerRowStyle} key={steamid}>
-        <div style={playerNameWrapperStyle}>
-          <Image 
-            src={`/players/${lowercaseSteamId}.png`}
-            alt={name}
-            width={60}
-            height={60}
-            onError={(e) => { e.currentTarget.src = '/players/idle.png'; }}
-            style={{objectFit:'contain'}}
-          />
-          <div style={playerNameStyle}>{name}</div>
-        </div>
-        <div style={statValueStyle}>{kills}</div>
-        <div style={statValueStyle}>{deaths}</div>
-        <div style={statValueStyle}>{adr}</div>
-      </div>
-    );
-  }
-
+  // Функция для определения фона раунда
   function getRoundBackground(result) {
-    if (!result) return '#262626'; // не сыгран: #262626
+    if (!result) return '#262626'; // не сыгран
     const normalizedResult = result.toLowerCase();
-    if (normalizedResult.startsWith('ct_win')) return '#847CA1'; // ct-win: #847CA1
-    if (normalizedResult.startsWith('t_win')) return '#8C8259';  // t-win: #8C8259
-    return '#262626'; // по умолчанию
+    if (normalizedResult.startsWith('ct_win')) return '#847CA1'; // ct-win
+    if (normalizedResult.startsWith('t_win')) return '#8C8259';  // t-win
+    return '#262626';
   }
 
   function getRoundIcon(result) {
@@ -146,144 +108,149 @@ export default function Page() {
     return <Image src={iconPath} alt={result} width={20} height={20} style={{objectFit:'contain'}}/>;
   }
 
+  // Функция отрисовки элемента для игрока (имя, статы)
+  function renderPlayerData(player, steamid, killsEl, deathsEl, adrEl) {
+    const { kills, deaths } = player.match_stats;
+    const adr = 0;
+    const lowercaseSteamId = steamid.toLowerCase();
+    return {
+      name: player.name,
+      kills: kills,
+      deaths: deaths,
+      adr: adr,
+      imgSrc: `/players/${lowercaseSteamId}.png`
+    };
+  }
+
   return (
-    <div style={{background:'none', width:'100%', height:'100vh', display:'flex', justifyContent:'center', alignItems:'center'}}>
-      <div style={{
+    <div style={{width:'100%',height:'100vh',display:'flex',justifyContent:'center',alignItems:'center',background:'none'}}>
+      <div className="compare-mvp" style={{
+        background: 'url(compare-mvp.png) center no-repeat',
+        backgroundSize:'cover',
         position:'relative',
         width:'1920px',
         height:'1080px',
-        background:'none',  // Убрали основной бекграунд
+        overflow:'hidden',
         fontFamily:'Blender Pro, sans-serif',
-        color:'#fff',
-        boxSizing:'border-box'
+        color:'#fff'
       }}>
+        
+        {/* Вся ваша верстка ниже. Мы заменим текстовые элементы через React, добавим 'id' к элементам и будем через React создать элементы */}
+        
+        {/* Базовые элементы, оставим как есть */}
+        <div className="rectangle-53"></div>
+        <div className="rectangle-55" style={{border:'1px solid #40327C'}}></div>
+        <div className="rectangle-50"></div>
+        <div className="rectangle-648"></div>
+        <div className="rectangle-606"></div>
+        <div className="rectangle-655"></div>
+        <div className="rectangle-617"></div>
+        <div className="rectangle-612"></div>
+        <div className="rectangle-618"></div>
+        <div className="rectangle-619"></div>
+        <div className="rectangle-613"></div>
+        <div className="rectangle-620"></div>
+        <div className="rectangle-610"></div>
+        <div className="rectangle-621"></div>
+        <div className="rectangle-607"></div>
+        <div className="rectangle-622"></div>
+        <div className="rectangle-615"></div>
+        <div className="rectangle-623"></div>
+        <div className="rectangle-609"></div>
+        <div className="rectangle-624"></div>
+        <div className="rectangle-616"></div>
+        <div className="rectangle-625"></div>
+        <div className="rectangle-627"></div>
+        <div className="rectangle-628"></div>
+        <div className="rectangle-629"></div>
+        <div className="rectangle-630"></div>
+        <div className="rectangle-611"></div>
+        <div className="rectangle-626"></div>
+        <div className="rectangle-631"></div>
+        <div className="rectangle-632"></div>
+        <div className="rectangle-649"></div>
+        <div className="rectangle-637"></div>
+        <div className="rectangle-650"></div>
+        <div className="rectangle-644"></div>
+        <div className="rectangle-651"></div>
+        <div className="rectangle-645"></div>
+        <div className="rectangle-652"></div>
+        <div className="rectangle-646"></div>
+        <div className="rectangle-653"></div>
+        <div className="rectangle-647"></div>
+        <div className="rectangle-654"></div>
 
-        {/* MATCH STATS Title */}
-        <div style={{
-          width:'803px', height:'140px', left:'539px', top:'17px', position:'absolute',
-          textAlign:'center', color:'white', fontSize:'91px', fontFamily:'Blender Pro', fontWeight:'900', lineHeight:'75.13px', textTransform:'uppercase'
-        }}>MATCH STATS</div>
+        {/* Логотипы команд */}
+        <img className="rectangle-49" src={`/teams/${tTeam.name}.png`} style={{objectFit:'cover'}}/>
+        <img className="rectangle-47" src={`/teams/${ctTeam.name}.png`} style={{objectFit:'cover'}}/>
 
-        <div style={{
-          width:'240px', height:'46px', left:'819px', top:'127px', position:'absolute',
-          textAlign:'center', color:'white', fontSize:'29px', fontFamily:'Blender Pro', fontWeight:'500', lineHeight:'23.94px'
-        }}>MAP: {mapName}</div>
+        {/* Player photos внизу можно оставить как декор либо заменить на реальные фото карт (при необходимости).
+           Предположим они - карты, оставим как есть или можно убрать.
+           Сейчас для простоты оставим как статические картинки.
+        */}
+        <img className="player-photo" src="https://via.placeholder.com/127x81" />
+        <img className="player-photo2" src="https://via.placeholder.com/127x81" />
+        <img className="player-photo3" src="https://via.placeholder.com/127x81" />
+        <img className="player-photo4" src="https://via.placeholder.com/127x81" />
+        <img className="player-photo5" src="https://via.placeholder.com/127x81" />
+        <img className="player-photo6" src="https://via.placeholder.com/127x81" />
+        <img className="player-photo7" src="https://via.placeholder.com/127x81" />
+        <img className="player-photo8" src="https://via.placeholder.com/127x81" />
+        <img className="player-photo9" src="https://via.placeholder.com/127x81" />
+        <img className="player-photo10" src="https://via.placeholder.com/127x81" />
 
-        {/* Верхний прямоугольник */}
-        <div style={{
-          width:'1419px', height:'113px', left:'231px', top:'173px', position:'absolute',
-          background:'rgba(33.63,27.95,59.17,0.88)', boxShadow:'0px -5px 0px #40327C inset'
-        }}></div>
+        {/* Подставляем реальные имена команд */}
+        <div className="team-name">{ctTeam.name.toUpperCase()}</div>
+        <div className="team-name2">{tTeam.name.toUpperCase()}</div>
 
-        {/* Нижний прямоугольник */}
-        <div style={{
-          width:'1419px', height:'133px', left:'231px', top:'884px', position:'absolute',
-          background:'rgba(33.63,27.95,59.17,0.88)', border:'1px #40327C solid'
-        }}></div>
+        {/* Заголовки PLAYER, PLAYER2, K, D, ADR уже есть,
+            заменим их текстContent с помощью React ниже если нужно. Но сейчас просто оставим как статично 
+        */}
+        <div className="player">PLAYER</div>
+        <div className="player2">PLAYER</div>
+        <div className="k">K</div>
+        <div className="k2">K</div>
+        <div className="d">D</div>
+        <div className="d2">D</div>
+        <div className="adr">ADR</div>
+        <div className="adr2">ADR</div>
 
-        {/* Левая панель */}
-        <div style={{
-          width:'702px', height:'542px', left:'231px', top:'307px', position:'absolute',
-          background:'linear-gradient(0deg, rgba(21,17,39,0.88) 0%, rgba(21,17,39,0.88) 100%), linear-gradient(180deg, rgba(14.88,14.88,14.88,0) 0%, rgba(56.42,39.21,113.79,0.20) 100%)',
-          border:'1px #40327C solid',
-          boxSizing:'border-box',
-          padding:'10px',
-          display:'flex',flexDirection:'column'
-        }}>
-          <div style={{
-            display:'grid',
-            gridTemplateColumns:'1fr 30px 30px 40px',
-            columnGap:'20px',
-            alignItems:'center',
-            background:'rgba(0,0,0,0.2)',
-            border:'none',
-            borderRadius:'0',
-            padding:'5px',
-            boxSizing:'border-box'
-          }}>
-            <span style={{
-              textAlign:'left',
-              fontSize:'20px',
-              fontWeight:'bold',
-              textTransform:'uppercase',
-              color:'#fff',
-              paddingRight:'70px'
-            }}>PLAYER</span>
-            <span style={colHeaderStyle}>K</span>
-            <span style={colHeaderStyle}>D</span>
-            <span style={colHeaderStyle}>ADR</span>
-          </div>
-          {ctPlayers.map(p=>renderPlayerRowADR(p))}
-        </div>
+        {/* Счёт */}
+        <div className="_031">{ctTeam.score}</div>
+        <div className="_2">{tTeam.score}</div>
+        <div className="div">:</div>
 
-        {/* Правая панель */}
-        <div style={{
-          width:'702px', height:'542px', left:'948px', top:'307px', position:'absolute',
-          background:'linear-gradient(0deg, rgba(52.06,47.46,37.53,0.88) 0%, rgba(52.06,47.46,37.53,0.88) 100%), linear-gradient(180deg, rgba(14.88,14.88,14.88,0) 0%, rgba(113.79,96.39,39.21,0.20) 100%)',
-          border:'1px #EADAA5 solid',
-          boxSizing:'border-box',
-          padding:'10px',
-          display:'flex',flexDirection:'column'
-        }}>
-          <div style={{
-            display:'grid',
-            gridTemplateColumns:'1fr 30px 30px 40px',
-            columnGap:'20px',
-            alignItems:'center',
-            background:'rgba(0,0,0,0.2)',
-            border:'none',
-            borderRadius:'0',
-            padding:'5px',
-            boxSizing:'border-box'
-          }}>
-            <span style={{
-              textAlign:'left',
-              fontSize:'20px',
-              fontWeight:'bold',
-              textTransform:'uppercase',
-              color:'#fff',
-              paddingRight:'70px'
-            }}>PLAYER</span>
-            <span style={colHeaderStyle}>K</span>
-            <span style={colHeaderStyle}>D</span>
-            <span style={colHeaderStyle}>ADR</span>
-          </div>
-          {tPlayers.map(p=>renderPlayerRowADR(p))}
-        </div>
+        {/* Заменим Playerlongname и статы на реальных игроков */}
+        {/* CT Players */}
+        {ctPlayers.map((pl,i) => {
+          const mapping = ctPlayersOrder[i];
+          const { name, kills, deaths, adr, imgSrc } = renderPlayerData(pl, pl.steamid);
+          // Устанавливаем текст внутри соответствующих элементов:
+          return (
+            <React.Fragment key={pl.steamid}>
+              <div className={mapping.nameClass.replace('.','')} style={{position:'absolute', color:'#fff',fontFamily:'Blender Pro',fontSize:'31px',fontWeight:'700',textTransform:'uppercase',whiteSpace:'nowrap',overflow:'hidden',width:'301px'}}>{name}</div>
+              <div className={mapping.killsClass.replace('.','')} style={{position:'absolute',color:'#fff',fontFamily:'Blender Pro',fontSize:'40px',fontWeight:'700',textTransform:'uppercase'}}>{kills}</div>
+              <div className={mapping.deathsClass.replace('.','')} style={{position:'absolute',color:'#fff',fontFamily:'Blender Pro',fontSize:'40px',fontWeight:'700',textTransform:'uppercase'}}>{deaths}</div>
+              <div className={mapping.adrClass.replace('.','')} style={{position:'absolute',color:'#fff',fontFamily:'Blender Pro',fontSize:'40px',fontWeight:'700',textTransform:'uppercase'}}>{adr}</div>
+            </React.Fragment>
+          );
+        })}
 
-        {/* Названия команд и счет */}
-        <div style={{
-          width:'240px', height:'48px', left:'335px', top:'209px', position:'absolute',
-          color:'white', fontSize:'40px', fontFamily:'Blender Pro', fontWeight:'700', textTransform:'uppercase', lineHeight:'33.02px'
-        }}>{ctTeam.name.toUpperCase()}</div>
+        {/* T Players */}
+        {tPlayers.map((pl,i)=>{
+          const mapping = tPlayersOrder[i];
+          const { name, kills, deaths, adr, imgSrc } = renderPlayerData(pl, pl.steamid);
+          return (
+            <React.Fragment key={pl.steamid}>
+              <div className={mapping.nameClass.replace('.','')} style={{position:'absolute',color:'#fff',fontFamily:'Blender Pro',fontSize:'31px',fontWeight:'700',textTransform:'uppercase',whiteSpace:'nowrap',overflow:'hidden',width:'301px',textAlign:'left'}}>{name}</div>
+              <div className={mapping.killsClass.replace('.','')} style={{position:'absolute',color:'#fff',fontFamily:'Blender Pro',fontSize:'40px',fontWeight:'700',textTransform:'uppercase'}}>{kills}</div>
+              <div className={mapping.deathsClass.replace('.','')} style={{position:'absolute',color:'#fff',fontFamily:'Blender Pro',fontSize:'40px',fontWeight:'700',textTransform:'uppercase'}}>{deaths}</div>
+              <div className={mapping.adrClass.replace('.','')} style={{position:'absolute',color:'#fff',fontFamily:'Blender Pro',fontSize:'40px',fontWeight:'700',textTransform:'uppercase'}}>{adr}</div>
+            </React.Fragment>
+          );
+        })}
 
-        <div style={{
-          width:'240px', height:'48px', left:'1300px', top:'209px', position:'absolute',
-          textAlign:'right', color:'white', fontSize:'40px', fontFamily:'Blender Pro', fontWeight:'700', textTransform:'uppercase', lineHeight:'33.02px'
-        }}>{tTeam.name.toUpperCase()}</div>
-
-        {/* Лого команд сверху */}
-        {/* Левое лого */}
-        <Image src={`/teams/${ctTeam.name}.png`} alt="CT Team" width={88} height={88} style={{objectFit:'contain', position:'absolute', left:'242px', top:'186px'}}/>
-        {/* Правое лого */}
-        <Image src={`/teams/${tTeam.name}.png`} alt="T Team" width={89} height={89} style={{objectFit:'contain', position:'absolute', left:'1536px', top:'181px'}}/>
-
-        <div style={{
-          width:'130.50px', left:'810px', top:'194px', position:'absolute',
-          textAlign:'center', color:'#847CA1', fontSize:'100px', fontFamily:'Blender Pro', fontWeight:'900', lineHeight:'82.56px'
-        }}>{ctTeam.score}</div>
-
-        <div style={{
-          left:'985px', top:'196px', position:'absolute',
-          textAlign:'center', color:'#EADAA5', fontSize:'100px', fontFamily:'Blender Pro', fontWeight:'900', lineHeight:'82.56px'
-        }}>{tTeam.score}</div>
-
-        <div style={{
-          width:'20px',height:'55px', left:'933px', top:'190px', position:'absolute',
-          textAlign:'center', color:'#575170', fontSize:'99px', fontFamily:'Blender Pro', fontWeight:'900', lineHeight:'81.73px'
-        }}>:</div>
-
-        {/* Отрисовка 24 раундов снизу */}
+        {/* Round History */}
         {rounds.map((roundNumber, i) => {
           const result = roundWins[roundNumber.toString()] || null;
           const baseLeft = 247;
@@ -319,7 +286,16 @@ export default function Page() {
           );
         })}
 
-        {/* Остальные картинки и элементы, если нужны, можно добавить аналогично */}
+        {/* MATCH STATS and MAP: NUKE (заменяем на актуальные данные) */}
+        <div className="match-stats" style={{
+          position:'absolute', left:'539px', top:'17px', width:'803px', height:'140px',
+          textAlign:'center', color:'#fff', fontSize:'91px', fontFamily:'Blender Pro', fontWeight:'900', textTransform:'uppercase',lineHeight:'75.13px'
+        }}>MATCH STATS</div>
+        <div className="map-nuke" style={{
+          position:'absolute', left:'819px', top:'127px', width:'240px', height:'46px',
+          textAlign:'center', color:'#fff', fontSize:'29px', fontFamily:'Blender Pro', fontWeight:'500', lineHeight:'23.94px'
+        }}>MAP: {mapName}</div>
+
       </div>
     </div>
   );
