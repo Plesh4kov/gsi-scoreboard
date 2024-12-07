@@ -108,7 +108,7 @@ export default function ScoreboardPage() {
         }
 
         .scoreboard-container {
-          width: 80%; /* Ширина как на втором скриншоте, адаптивно */
+          width: 80%; 
           margin: 40px auto;
           display: flex;
           flex-direction: column;
@@ -180,22 +180,23 @@ export default function ScoreboardPage() {
 
         .team-stat-container {
           border-radius: 8px;
-          padding: 10px;
+          /* Уменьшаем отступы для менее "воздушного" вида */
+          padding: 5px; 
           flex: 1;
           display: flex;
           flex-direction: column;
-          gap: 10px;
+          gap: 5px; 
         }
 
         .team-table-header {
           display: grid;
           grid-template-columns: [player] 1fr [kills] 60px [deaths] 60px [kd] 60px;
           text-align: center;
-          gap: 10px;
+          gap: 5px; 
           align-items: center;
           background: rgba(0,0,0,0.3);
           border-radius: 4px;
-          padding: 10px;
+          padding: 5px; 
         }
 
         .col-header, .col-header-player {
@@ -207,7 +208,7 @@ export default function ScoreboardPage() {
 
         .col-header-player {
           text-align: left;
-          padding-left: 10px;
+          padding-left: 5px; 
         }
 
         .player-row {
@@ -215,24 +216,26 @@ export default function ScoreboardPage() {
           grid-template-columns: [player] 1fr [kills] 60px [deaths] 60px [kd] 60px;
           align-items: center;
           background: rgba(0,0,0,0.2);
-          padding: 10px;
+          /* Уменьшаем внутренние отступы */
+          padding: 5px;
           border-radius: 8px;
-          gap: 10px;
+          gap: 5px; 
         }
 
-        /* Меняем object-fit на contain, чтобы фото не обрезалось */
         .player-img {
           width: 60px;
           height: 60px;
           border-radius: 8px;
+          /* object-fit: contain, чтобы не обрезать изображение */
           object-fit: contain;
         }
 
         .player-name-wrapper {
           display: flex;
           align-items: center;
-          gap: 10px;
-          padding-left: 10px;
+          /* Меньше расстояние между фото и никнеймом */
+          gap: 5px; 
+          padding-left: 5px; 
           overflow: hidden;
         }
 
@@ -257,7 +260,8 @@ export default function ScoreboardPage() {
           width: 100%;
           background: #201c2c;
           border-radius: 8px;
-          padding: 10px; /* уменьшили отступы */
+          /* Уменьшаем отступы */
+          padding: 5px; 
           margin-top: 10px;
           box-sizing: border-box;
         }
@@ -267,55 +271,48 @@ export default function ScoreboardPage() {
           font-weight: bold;
           text-transform: uppercase;
           color: #fff;
-          margin-bottom: 10px; /* уменьшили нижний отступ */
+          margin-bottom: 5px; 
           text-align: center;
         }
 
         .halves-container {
           display: flex;
           align-items: center;
-          justify-content: space-between;
+          justify-content: flex-start;
           width: 100%;
           position: relative;
-          overflow: hidden;
+          /* Разрешаем горизонтальную прокрутку, если раундов слишком много */
+          overflow-x: auto; 
         }
 
         .first-half-rounds,
         .second-half-rounds {
           display: flex;
           flex-wrap: nowrap;
-          gap: 10px;
+          gap: 5px; 
           align-items: center;
-          justify-content: center;
-          flex: 1;
         }
 
-        /* Уменьшаем высоту разделительной линии */
         .rounds-divider {
           width: 2px;
           background: #ccc;
           height: 50px; 
-          margin: 0 30px;
-          position: relative;
+          margin: 0 10px; 
           flex-shrink:0;
         }
 
-        /* Используем aspect-ratio для одинаковых квадратов.
-           Все ячейки равны по размеру и при увеличении раундов просто становятся мельче. */
+        /* Фиксированный размер для раундов, чтобы не менялся с количеством */
         .round-wrapper {
+          width: 40px; 
+          height: 60px;
           display: flex;
           flex-direction: column;
           align-items: center;
           justify-content: center;
           gap: 2px;
           border-radius: 2px;
-          position: relative;
           background: #3a3357;
-          /* Каждая ячейка квадратная */
-          aspect-ratio: 1;
-          flex-shrink: 1;
-          flex-grow: 1;
-          min-width: 0;
+          flex-shrink: 0;
           padding: 5px;
         }
 
@@ -327,7 +324,6 @@ export default function ScoreboardPage() {
           background: #998959;
         }
 
-        /* Фиксируем размер иконок для единообразия */
         .round-icon {
           width: 24px;
           height: 24px;
