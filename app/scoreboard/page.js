@@ -153,7 +153,6 @@ export default function ScoreboardPage() {
           font-size: 24px;
           font-weight: bold;
           text-transform: uppercase;
-          /* Теперь названия команд белые */
           color: #fff;
         }
 
@@ -170,9 +169,6 @@ export default function ScoreboardPage() {
           justify-content: space-between;
         }
 
-        /* CT цвет: #6E58AB, T цвет: #998959
-           Оставим фон для наглядности, но не чёрный.
-        */
         .ct-side.team-stat-container {
           background: #6E58AB;
         }
@@ -270,7 +266,7 @@ export default function ScoreboardPage() {
           text-transform: uppercase;
           color: #fff;
           margin-bottom: 20px;
-          text-align: center; /* по центру */
+          text-align: center;
         }
 
         .halves-container {
@@ -281,21 +277,14 @@ export default function ScoreboardPage() {
           position: relative;
         }
 
+        /* Добавляем wrap, чтобы раунды не вылезали за контейнер */
         .first-half-rounds,
         .second-half-rounds {
           display: flex;
+          flex-wrap: wrap;
           gap: 10px;
-          flex-wrap: nowrap;
           align-items: center;
-        }
-
-        .first-half-rounds {
-          justify-content: flex-end;
-          flex: 1;
-        }
-
-        .second-half-rounds {
-          justify-content: flex-start;
+          justify-content: center;
           flex: 1;
         }
 
@@ -321,11 +310,11 @@ export default function ScoreboardPage() {
         }
 
         .round-wrapper.ct-win {
-          background: #6E58AB; /* CT цвет */
+          background: #6E58AB;
         }
 
         .round-wrapper.t-win {
-          background: #998959; /* T цвет */
+          background: #998959;
         }
 
         .round-icon {
