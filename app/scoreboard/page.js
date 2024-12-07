@@ -221,11 +221,13 @@ export default function ScoreboardPage() {
           gap: 10px;
         }
 
+        /* Изменяем стиль фото игроков как на втором скрине снизу:
+           Сделаем их крупнее, с object-fit: cover. */
         .player-img {
-          width: 40px;
-          height: 40px;
-          border-radius: 50%;
-          object-fit: contain;
+          width: 60px;
+          height: 60px;
+          border-radius: 8px;
+          object-fit: cover;
         }
 
         .player-name-wrapper {
@@ -257,8 +259,7 @@ export default function ScoreboardPage() {
           width: 100%;
           background: #201c2c;
           border-radius: 8px;
-          /* уменьшили отступы */
-          padding: 10px; 
+          padding: 10px; /* уменьшили отступы */
           margin-top: 10px;
           box-sizing: border-box;
         }
@@ -268,8 +269,7 @@ export default function ScoreboardPage() {
           font-weight: bold;
           text-transform: uppercase;
           color: #fff;
-          /* уменьшим нижний отступ */
-          margin-bottom: 10px; 
+          margin-bottom: 10px; /* уменьшили нижний отступ */
           text-align: center;
         }
 
@@ -292,10 +292,11 @@ export default function ScoreboardPage() {
           flex: 1;
         }
 
+        /* Делаем линию короче по высоте */
         .rounds-divider {
           width: 2px;
           background: #ccc;
-          height: 100px;
+          height: 50px; /* уменьшили высоту линии */
           margin: 0 30px;
           position: relative;
           flex-shrink:0;
@@ -324,9 +325,10 @@ export default function ScoreboardPage() {
           background: #998959;
         }
 
+        /* Фиксируем размер иконок для одинакового размера у всех */
         .round-icon {
-          max-width: 100%;
-          height: auto;
+          width: 24px;
+          height: 24px;
           object-fit: contain;
         }
 
@@ -349,10 +351,10 @@ function renderPlayerRow(player) {
       <div className="player-name-wrapper">
         <img 
           className="player-img"
-          src={`/players/${steamid}.png`} 
+          src={`/players/${steamid.toLowerCase()}.png`} 
           alt={name}
-          width={40}
-          height={40}
+          width={60}
+          height={60}
           onError={(e) => { e.currentTarget.src = '/players/idle.png'; }}
         />
         <div className="player-name">{name}</div>
@@ -388,24 +390,23 @@ function renderRoundHistory(roundWins) {
 }
 
 function createRoundCell(roundNumber, result) {
+  const normalizedResult = result.toLowerCase();
   let iconPath;
   let roundClass = '';
 
-  if (result.toLowerCase().startsWith('ct_win')) {
+  if (normalizedResult.startsWith('ct_win')) {
     roundClass = 'ct-win';
-  } else if (result.toLowerCase().startsWith('t_win')) {
+  } else if (normalizedResult.startsWith('t_win')) {
     roundClass = 't-win';
   }
 
-  switch (result.toLowerCase()) {
+  switch (normalizedResult) {
     case 't_win_elimination':
+    case 'ct_win_elimination':
       iconPath = '/icons/skull.png';
       break;
     case 't_win_bomb':
       iconPath = '/icons/bomb.png';
-      break;
-    case 'ct_win_elimination':
-      iconPath = '/icons/skull.png';
       break;
     case 'ct_win_defuse':
       iconPath = '/icons/defuse.png';
