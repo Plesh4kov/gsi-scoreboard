@@ -70,7 +70,6 @@ export default function ScoreboardPage() {
         </div>
       </div>
 
-      {/* Статистика команд (заголовки и игроки) */}
       <div className="teams-stats-container">
         <div className="team-stat-container ct-side">
           <div className="team-table-header">
@@ -92,7 +91,6 @@ export default function ScoreboardPage() {
         </div>
       </div>
 
-      {/* История раундов */}
       <div className="round-history-container">
         <div className="round-history-title">ROUND HISTORY</div>
         {renderRoundHistory(roundWins)}
@@ -251,11 +249,12 @@ export default function ScoreboardPage() {
           text-align: center;
         }
 
+        /* Round History */
         .round-history-container {
           width: 100%;
           background: #201c2c;
           border-radius: 8px;
-          padding: 20px; /* увеличиваем отступы */
+          padding: 20px;
           margin-top: 10px;
           box-sizing: border-box;
         }
@@ -265,7 +264,7 @@ export default function ScoreboardPage() {
           font-weight: bold;
           text-transform: uppercase;
           color: #fff;
-          margin-bottom: 20px; /* побольше отступ под заголовком */
+          margin-bottom: 20px;
           text-align: left;
           padding-left: 10px;
         }
@@ -275,38 +274,66 @@ export default function ScoreboardPage() {
           align-items: center;
           justify-content: space-between;
           width: 100%;
+          position: relative;
         }
 
         .first-half-rounds,
         .second-half-rounds {
           display: flex;
-          gap: 10px;
+          gap: 5px;
           flex-wrap: nowrap;
           align-items: center;
-          flex: 1;
         }
 
         .first-half-rounds {
           justify-content: flex-end;
+          flex: 1;
         }
 
         .second-half-rounds {
           justify-content: flex-start;
+          flex: 1;
         }
 
         .rounds-divider {
           width: 2px;
           background: #ccc;
-          height: 50px; /* делаем разделитель выше */
-          margin: 0 60px; /* больше пространства вокруг разделителя */
+          height: 80px;
+          margin: 0 30px;
+          position: relative;
+        }
+
+        .halftime-label {
+          position: absolute;
+          left: 50%;
+          top: 50%;
+          transform: translate(-50%, -50%) rotate(-90deg);
+          font-size: 14px;
+          font-weight: bold;
+          text-transform: uppercase;
+          color: #fff;
         }
 
         .round-wrapper {
+          width: 30px;
+          height: 50px;
           display: flex;
           flex-direction: column;
           align-items: center;
-          margin: 0;
+          justify-content: center;
           gap: 2px;
+          border-radius: 2px;
+          position: relative;
+          background: #3a3357; /* базовый фон */
+        }
+
+        /* Цвет фона в зависимости от результата */
+        .round-wrapper.ct-win {
+          background: #3b3a9f; /* синий для CT */
+        }
+
+        .round-wrapper.t-win {
+          background: #9f3b3b; /* красный для T */
         }
 
         .round-icon {
@@ -361,34 +388,44 @@ function renderRoundHistory(roundWins) {
   return (
     <div className="halves-container">
       <div className="first-half-rounds">
-        {firstHalfRounds.map(roundNumber => createRoundIcon(roundNumber, roundWins[roundNumber.toString()]))}
+        {firstHalfRounds.map(roundNumber => createRoundCell(roundNumber, roundWins[roundNumber.toString()]))}
       </div>
       <div className="rounds-divider"></div>
+      <div className="halftime-label">HALFTIME</div>
       <div className="second-half-rounds">
-        {secondHalfRounds.map(roundNumber => createRoundIcon(roundNumber, roundWins[roundNumber.toString()]))}
+        {secondHalfRounds.map(roundNumber => createRoundCell(roundNumber, roundWins[roundNumber.toString()]))}
       </div>
     </div>
   );
 }
 
-function createRoundIcon(roundNumber, result) {
+function createRoundCell(roundNumber, result) {
   let iconPath;
+  let roundClass = '';
+
+  // Определяем, кто выиграл
+  // Предполагаем, что все ct_win_* - победа CT, все t_win_* - победа T
+  if (result.startsWith('ct_win')) {
+    roundClass = 'ct-win';
+  } else if (result.startsWith('t_win')) {
+    roundClass = 't-win';
+  }
 
   switch (result) {
     case 't_win_elimination':
-        iconPath = 'icons/t_win_elimination.png';
+        iconPath = 'icons/skull.png'; // замените на свои иконки
         break;
     case 't_win_bomb':
-        iconPath = 'icons/t_win_bomb.png';
+        iconPath = 'icons/bomb.png';
         break;
     case 'ct_win_elimination':
-        iconPath = 'icons/ct_win_elimination.png';
+        iconPath = 'icons/skull.png';
         break;
     case 'ct_win_defuse':
-        iconPath = 'icons/ct_win_defuse.png';
+        iconPath = 'icons/defuse.png';
         break;
     case 'ct_win_time':
-        iconPath = 'icons/ct_win_time.png';
+        iconPath = 'icons/clock.png';
         break;
     default:
         iconPath = 'icons/default.png';
@@ -396,7 +433,7 @@ function createRoundIcon(roundNumber, result) {
   }
 
   return (
-    <div className="round-wrapper" key={roundNumber}>
+    <div className={`round-wrapper ${roundClass}`} key={roundNumber}>
       <Image src={`/${iconPath}`} alt={result} className="round-icon" width={16} height={16} />
       <span className="round-number">{roundNumber}</span>
     </div>
