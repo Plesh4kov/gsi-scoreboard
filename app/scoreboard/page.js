@@ -27,7 +27,7 @@ export default function ScoreboardPage() {
       <div style={{
         color: '#fff',
         fontFamily: 'Arial',
-        backgroundColor: '#111',
+        backgroundColor: 'transparent',
         height:'100vh',
         display:'flex',
         alignItems:'center',
@@ -51,14 +51,9 @@ export default function ScoreboardPage() {
   let ctPlayers = playersArray.filter(p => p.team === 'CT');
   let tPlayers = playersArray.filter(p => p.team === 'T');
 
-  // Сортируем по количеству убийств для удобства
+  // Сортируем по убийствам для порядка
   ctPlayers.sort((a, b) => b.match_stats.kills - a.match_stats.kills);
   tPlayers.sort((a, b) => b.match_stats.kills - a.match_stats.kills);
-
-  // Найдём лучшего игрока по score среди всех игроков
-  const allPlayersCombined = [...ctPlayers, ...tPlayers];
-  allPlayersCombined.sort((a,b) => b.match_stats.score - a.match_stats.score);
-  const bestPlayerSteamid = allPlayersCombined[0].steamid; // только один лучший игрок
 
   return (
     <div className="scoreboard-container">
@@ -66,13 +61,13 @@ export default function ScoreboardPage() {
 
       <div className="teams-line">
         <div className="team-info-line ct-side">
-          <Image alt="CT Team" src={`/teams/${ctTeam.name}.png`} width={50} height={50}/>
+          <Image alt="CT Team" src={`/teams/${ctTeam.name}.png`} width={50} height={50} className="team-logo"/>
           <span className="team-name">{ctTeam.name.toUpperCase()}</span>
         </div>
         <div className="score-middle">{ctTeam.score} - {tTeam.score}</div>
         <div className="team-info-line t-side">
           <span className="team-name">{tTeam.name.toUpperCase()}</span>
-          <Image alt="T Team" src={`/teams/${tTeam.name}.png`} width={50} height={50}/>
+          <Image alt="T Team" src={`/teams/${tTeam.name}.png`} width={50} height={50} className="team-logo"/>
         </div>
       </div>
 
@@ -93,10 +88,10 @@ export default function ScoreboardPage() {
       {/* Игроки */}
       <div className="players-table-row">
         <div className="players-column ct-side">
-          {ctPlayers.map(player => renderPlayerRow(player, player.steamid === bestPlayerSteamid))}
+          {ctPlayers.map(player => renderPlayerRow(player))}
         </div>
         <div className="players-column t-side">
-          {tPlayers.map(player => renderPlayerRow(player, player.steamid === bestPlayerSteamid))}
+          {tPlayers.map(player => renderPlayerRow(player))}
         </div>
       </div>
 
@@ -110,9 +105,9 @@ export default function ScoreboardPage() {
         body {
           margin: 0;
           padding: 0;
-          background: #1c1b29;
           font-family: Arial, sans-serif;
           color: #fff;
+          background: transparent !important; /* Фон полностью прозрачный */
         }
 
         .scoreboard-container {
@@ -123,12 +118,12 @@ export default function ScoreboardPage() {
           flex-direction: column;
           align-items: center;
           gap: 20px;
+          background: transparent !important; /* Прозрачный фон */
         }
 
         .map-name {
           font-size: 48px;
           font-weight: bold;
-          color: #fff;
           text-transform: uppercase;
           margin-bottom: 20px;
         }
@@ -139,8 +134,8 @@ export default function ScoreboardPage() {
           align-items: center;
           width: 100%;
           padding: 10px 20px;
-          background: #2e2547;
           border-radius: 8px;
+          background: transparent; /* убираем фон */
         }
 
         .team-info-line {
@@ -166,22 +161,21 @@ export default function ScoreboardPage() {
         .score-middle {
           font-size: 36px;
           font-weight: bold;
-          color: #fff;
         }
 
         .table-header-row {
           display: flex;
           justify-content: space-between;
           width: 100%;
+          background: transparent;
         }
 
         .team-table-header {
           display: flex;
           width: 45%;
           justify-content: space-around;
-          background: #201c2c;
           border-radius: 8px;
-          padding: 10px 0;
+          background: transparent;
         }
 
         .col-header {
@@ -208,14 +202,15 @@ export default function ScoreboardPage() {
         .player-row {
           display: flex;
           align-items: center;
-          background: #2a2440;
           padding: 10px;
           border-radius: 8px;
           gap: 10px;
+          background: transparent; /* Прозрачный */
         }
 
         .player-img {
           border-radius: 50%;
+          object-fit: contain; /* гарантируем масштабирование по размеру */
         }
 
         .player-name {
@@ -241,17 +236,11 @@ export default function ScoreboardPage() {
           text-align: center;
         }
 
-        /* Подсветка лучшего игрока */
-        .best-player {
-          border: 2px solid #ffde59;
-        }
-
         .round-history-container {
           width: 100%;
-          background: #201c2c;
-          border-radius: 8px;
           padding: 10px;
           margin-top: 10px;
+          background: transparent; /* Прозрачно */
         }
 
         .round-history-title {
@@ -263,33 +252,13 @@ export default function ScoreboardPage() {
           color: #fff;
         }
 
-        .halves-container {
-          position: relative;
-          width: 100%;
+        .round-history-line {
           display: flex;
           align-items: center;
-          justify-content: space-between;
           gap: 10px;
-        }
-
-        .half-rounds {
-          display: flex;
-          flex-wrap: wrap;
-          gap: 10px;
-        }
-
-        .half-rounds:first-child {
-          justify-content: flex-end;
-        }
-
-        .half-rounds:last-child {
-          justify-content: flex-start;
         }
 
         .rounds-divider {
-          position: absolute;
-          left: 50%;
-          transform: translateX(-50%);
           width: 1px;
           background: #ccc;
           height: 30px;
@@ -313,19 +282,24 @@ export default function ScoreboardPage() {
           color: #ccc;
           margin-top: 2px;
         }
+
+        .team-logo {
+          object-fit: contain;
+          width: 50px !important;
+          height: 50px !important;
+        }
       `}</style>
     </div>
   );
 }
 
-function renderPlayerRow(player, isBest) {
+function renderPlayerRow(player) {
   const { name, steamid, match_stats } = player;
   const { kills, deaths } = match_stats;
   const kd = deaths === 0 ? kills.toString() : (kills/deaths).toFixed(2);
-  const rowClass = isBest ? 'player-row best-player' : 'player-row';
 
   return (
-    <div className={rowClass} key={steamid}>
+    <div className="player-row" key={steamid}>
       <Image 
         className="player-img"
         src={`/players/${steamid}.jpg`} 
@@ -350,15 +324,12 @@ function renderRoundHistory(roundWins) {
   const firstHalfRounds = roundNumbers.filter(n => n <= 12);
   const secondHalfRounds = roundNumbers.filter(n => n > 12);
 
+  // Все в одну линию: сначала 1-12 раунды, разделитель, затем остальные
   return (
-    <div className="halves-container">
-      <div className="half-rounds">
-        {firstHalfRounds.map(roundNumber => createRoundIcon(roundNumber, roundWins[roundNumber.toString()]))}
-      </div>
+    <div className="round-history-line">
+      {firstHalfRounds.map(roundNumber => createRoundIcon(roundNumber, roundWins[roundNumber.toString()]))}
       <div className="rounds-divider"></div>
-      <div className="half-rounds">
-        {secondHalfRounds.map(roundNumber => createRoundIcon(roundNumber, roundWins[roundNumber.toString()]))}
-      </div>
+      {secondHalfRounds.map(roundNumber => createRoundIcon(roundNumber, roundWins[roundNumber.toString()]))}
     </div>
   );
 }
