@@ -108,8 +108,7 @@ export default function ScoreboardPage() {
         }
 
         .scoreboard-container {
-          width: 1000px;
-          max-width: 90%;
+          width: 80%; /* Ширина как на втором скриншоте, адаптивно */
           margin: 40px auto;
           display: flex;
           flex-direction: column;
@@ -221,13 +220,12 @@ export default function ScoreboardPage() {
           gap: 10px;
         }
 
-        /* Изменяем стиль фото игроков как на втором скрине снизу:
-           Сделаем их крупнее, с object-fit: cover. */
+        /* Меняем object-fit на contain, чтобы фото не обрезалось */
         .player-img {
           width: 60px;
           height: 60px;
           border-radius: 8px;
-          object-fit: cover;
+          object-fit: contain;
         }
 
         .player-name-wrapper {
@@ -292,16 +290,18 @@ export default function ScoreboardPage() {
           flex: 1;
         }
 
-        /* Делаем линию короче по высоте */
+        /* Уменьшаем высоту разделительной линии */
         .rounds-divider {
           width: 2px;
           background: #ccc;
-          height: 50px; /* уменьшили высоту линии */
+          height: 50px; 
           margin: 0 30px;
           position: relative;
           flex-shrink:0;
         }
 
+        /* Используем aspect-ratio для одинаковых квадратов.
+           Все ячейки равны по размеру и при увеличении раундов просто становятся мельче. */
         .round-wrapper {
           display: flex;
           flex-direction: column;
@@ -311,6 +311,8 @@ export default function ScoreboardPage() {
           border-radius: 2px;
           position: relative;
           background: #3a3357;
+          /* Каждая ячейка квадратная */
+          aspect-ratio: 1;
           flex-shrink: 1;
           flex-grow: 1;
           min-width: 0;
@@ -325,7 +327,7 @@ export default function ScoreboardPage() {
           background: #998959;
         }
 
-        /* Фиксируем размер иконок для одинакового размера у всех */
+        /* Фиксируем размер иконок для единообразия */
         .round-icon {
           width: 24px;
           height: 24px;
@@ -346,12 +348,14 @@ function renderPlayerRow(player) {
   const { kills, deaths } = match_stats;
   const kd = deaths === 0 ? kills.toString() : (kills/deaths).toFixed(2);
 
+  const lowercaseSteamId = steamid.toString().toLowerCase();
+
   return (
     <div className="player-row" key={steamid}>
       <div className="player-name-wrapper">
         <img 
           className="player-img"
-          src={`/players/${steamid.toLowerCase()}.png`} 
+          src={`/players/${lowercaseSteamId}.png`} 
           alt={name}
           width={60}
           height={60}
