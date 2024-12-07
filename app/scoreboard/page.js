@@ -27,7 +27,7 @@ export default function ScoreboardPage() {
       <div style={{
         color: '#fff',
         fontFamily: 'Arial',
-        backgroundColor: 'transparent',
+        backgroundColor: '#111',
         height:'100vh',
         display:'flex',
         alignItems:'center',
@@ -51,9 +51,12 @@ export default function ScoreboardPage() {
   let ctPlayers = playersArray.filter(p => p.team === 'CT');
   let tPlayers = playersArray.filter(p => p.team === 'T');
 
-  // Сортируем по убийствам
   ctPlayers.sort((a, b) => b.match_stats.kills - a.match_stats.kills);
   tPlayers.sort((a, b) => b.match_stats.kills - a.match_stats.kills);
+
+  const allPlayersCombined = [...ctPlayers, ...tPlayers];
+  allPlayersCombined.sort((a,b) => b.match_stats.score - a.match_stats.score);
+  const bestPlayerSteamid = allPlayersCombined[0].steamid; 
 
   return (
     <div className="scoreboard-container">
@@ -61,17 +64,16 @@ export default function ScoreboardPage() {
 
       <div className="teams-line">
         <div className="team-info-line ct-side">
-          <Image alt="CT Team" src={`/teams/${ctTeam.name}.png`} width={50} height={50} className="team-logo"/>
+          <Image alt="CT Team" src={`/teams/${ctTeam.name}.png`} width={50} height={50}/>
           <span className="team-name">{ctTeam.name.toUpperCase()}</span>
         </div>
         <div className="score-middle">{ctTeam.score} - {tTeam.score}</div>
         <div className="team-info-line t-side">
           <span className="team-name">{tTeam.name.toUpperCase()}</span>
-          <Image alt="T Team" src={`/teams/${tTeam.name}.png`} width={50} height={50} className="team-logo"/>
+          <Image alt="T Team" src={`/teams/${tTeam.name}.png`} width={50} height={50}/>
         </div>
       </div>
 
-      {/* Заголовки для колонок */}
       <div className="table-header-row">
         <div className="team-table-header ct-side">
           <span className="col-header">Kills</span>
@@ -85,17 +87,15 @@ export default function ScoreboardPage() {
         </div>
       </div>
 
-      {/* Игроки */}
       <div className="players-table-row">
         <div className="players-column ct-side">
-          {ctPlayers.map(player => renderPlayerRow(player))}
+          {ctPlayers.map(player => renderPlayerRow(player, player.steamid === bestPlayerSteamid))}
         </div>
         <div className="players-column t-side">
-          {tPlayers.map(player => renderPlayerRow(player))}
+          {tPlayers.map(player => renderPlayerRow(player, player.steamid === bestPlayerSteamid))}
         </div>
       </div>
 
-      {/* История раундов */}
       <div className="round-history-container">
         <div className="round-history-title">ROUND HISTORY</div>
         {renderRoundHistory(roundWins)}
@@ -105,9 +105,9 @@ export default function ScoreboardPage() {
         body {
           margin: 0;
           padding: 0;
+          background: transparent; /* Основной фон убираем */
           font-family: Arial, sans-serif;
           color: #fff;
-          background: transparent; /* общий фон прозрачен */
         }
 
         .scoreboard-container {
@@ -118,18 +118,18 @@ export default function ScoreboardPage() {
           flex-direction: column;
           align-items: center;
           gap: 20px;
-
-          /* Добавляем полупрозрачный фон для контейнера */
-          background: rgba(0, 0, 0, 0.5);
-          border-radius: 8px;
-          padding: 20px;
         }
 
         .map-name {
           font-size: 48px;
           font-weight: bold;
+          color: #fff;
           text-transform: uppercase;
           margin-bottom: 20px;
+          background: #2e2547; /* Фон только под названием карты */
+          border-radius: 8px;
+          padding: 10px;
+          text-align: center;
         }
 
         .teams-line {
@@ -138,8 +138,8 @@ export default function ScoreboardPage() {
           align-items: center;
           width: 100%;
           padding: 10px 20px;
+          background: transparent; /* Убираем фон под командами */
           border-radius: 8px;
-          background: transparent; 
         }
 
         .team-info-line {
@@ -165,21 +165,23 @@ export default function ScoreboardPage() {
         .score-middle {
           font-size: 36px;
           font-weight: bold;
+          color: #fff;
         }
 
         .table-header-row {
           display: flex;
           justify-content: space-between;
           width: 100%;
-          background: transparent;
+          background: transparent; /* Убираем фон у заголовков */
         }
 
         .team-table-header {
           display: flex;
           width: 45%;
           justify-content: space-around;
+          background: transparent; /* Убираем фон у заголовков таблиц */
           border-radius: 8px;
-          background: transparent;
+          padding: 10px 0;
         }
 
         .col-header {
@@ -206,15 +208,14 @@ export default function ScoreboardPage() {
         .player-row {
           display: flex;
           align-items: center;
+          background: #2a2440; /* Фон у игроков */
           padding: 10px;
           border-radius: 8px;
           gap: 10px;
-          background: rgba(0,0,0,0.3); /* можно добавить легкий фон под каждого игрока */
         }
 
         .player-img {
           border-radius: 50%;
-          object-fit: contain;
         }
 
         .player-name {
@@ -240,12 +241,16 @@ export default function ScoreboardPage() {
           text-align: center;
         }
 
+        .best-player {
+          border: 2px solid #ffde59;
+        }
+
         .round-history-container {
           width: 100%;
+          background: #201c2c; /* Фон под историей раундов */
+          border-radius: 8px;
           padding: 10px;
           margin-top: 10px;
-          background: rgba(0,0,0,0.3);
-          border-radius: 8px;
         }
 
         .round-history-title {
@@ -257,13 +262,33 @@ export default function ScoreboardPage() {
           color: #fff;
         }
 
-        .round-history-line {
+        .halves-container {
+          position: relative;
+          width: 100%;
           display: flex;
           align-items: center;
+          justify-content: space-between;
           gap: 10px;
         }
 
+        .half-rounds {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 10px;
+        }
+
+        .half-rounds:first-child {
+          justify-content: flex-end;
+        }
+
+        .half-rounds:last-child {
+          justify-content: flex-start;
+        }
+
         .rounds-divider {
+          position: absolute;
+          left: 50%;
+          transform: translateX(-50%);
           width: 1px;
           background: #ccc;
           height: 30px;
@@ -287,24 +312,19 @@ export default function ScoreboardPage() {
           color: #ccc;
           margin-top: 2px;
         }
-
-        .team-logo {
-          object-fit: contain;
-          width: 50px !important;
-          height: 50px !important;
-        }
       `}</style>
     </div>
   );
 }
 
-function renderPlayerRow(player) {
+function renderPlayerRow(player, isBest) {
   const { name, steamid, match_stats } = player;
   const { kills, deaths } = match_stats;
   const kd = deaths === 0 ? kills.toString() : (kills/deaths).toFixed(2);
+  const rowClass = isBest ? 'player-row best-player' : 'player-row';
 
   return (
-    <div className="player-row" key={steamid}>
+    <div className={rowClass} key={steamid}>
       <Image 
         className="player-img"
         src={`/players/${steamid}.jpg`} 
@@ -330,10 +350,14 @@ function renderRoundHistory(roundWins) {
   const secondHalfRounds = roundNumbers.filter(n => n > 12);
 
   return (
-    <div className="round-history-line">
-      {firstHalfRounds.map(roundNumber => createRoundIcon(roundNumber, roundWins[roundNumber.toString()]))}
+    <div className="halves-container">
+      <div className="half-rounds">
+        {firstHalfRounds.map(roundNumber => createRoundIcon(roundNumber, roundWins[roundNumber.toString()]))}
+      </div>
       <div className="rounds-divider"></div>
-      {secondHalfRounds.map(roundNumber => createRoundIcon(roundNumber, roundWins[roundNumber.toString()]))}
+      <div className="half-rounds">
+        {secondHalfRounds.map(roundNumber => createRoundIcon(roundNumber, roundWins[roundNumber.toString()]))}
+      </div>
     </div>
   );
 }
