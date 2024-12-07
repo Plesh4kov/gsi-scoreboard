@@ -70,6 +70,7 @@ export default function ScoreboardPage() {
         </div>
       </div>
 
+      {/* Заголовки для колонок */}
       <div className="table-header-row">
         <div className="team-table-header ct-side">
           <span className="col-header">Kills</span>
@@ -83,6 +84,7 @@ export default function ScoreboardPage() {
         </div>
       </div>
 
+      {/* Игроки */}
       <div className="players-table-row">
         <div className="players-column ct-side">
           {ctPlayers.map(player => renderPlayerRow(player))}
@@ -92,6 +94,7 @@ export default function ScoreboardPage() {
         </div>
       </div>
 
+      {/* История раундов */}
       <div className="round-history-container">
         <div className="round-history-title">ROUND HISTORY</div>
         {renderRoundHistory(roundWins)}
@@ -178,11 +181,11 @@ export default function ScoreboardPage() {
         }
 
         .team-table-header {
-          display: flex;
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          text-align: center;
+          gap: 10px;
           width: 45%;
-          justify-content: space-around;
-          background: transparent;
-          border-radius: 8px;
           padding: 10px 0;
         }
 
@@ -234,16 +237,16 @@ export default function ScoreboardPage() {
         }
 
         .player-stats {
-          display: flex;
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 10px;
+          text-align: center;
           flex: 3;
-          justify-content: space-around;
         }
 
         .stat-value {
           font-weight: bold;
           font-size: 14px;
-          min-width: 40px;
-          text-align: center;
         }
 
         .round-history-container {
@@ -258,44 +261,51 @@ export default function ScoreboardPage() {
           font-size: 16px;
           font-weight: bold;
           text-transform: uppercase;
-          text-align: center;
-          margin-bottom: 10px;
           color: #fff;
+          margin-bottom: 10px;
+          text-align: left;
         }
 
         .round-history-line {
           display: flex;
           align-items: center;
-          justify-content: flex-start;
-          /* Без отступов между иконками */
+          width: 100%;
+          flex-wrap: nowrap;
         }
 
         .rounds-divider {
           width: 1px;
           background: #ccc;
           height: 20px;
-          margin: 0 5px; /* небольшой отступ для разделителя */
+          margin: 0 5px;
         }
 
-        .round-wrapper {
+        .rounds-line {
           display: flex;
-          flex-direction: column;
+          flex-wrap: nowrap;
           align-items: center;
-          margin: 0; /* убираем отступы */
+          gap: 5px;
         }
 
         .round-icon {
           width: 16px;
           height: 16px;
           object-fit: contain;
+        }
+
+        .round-wrapper {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
           margin: 0;
+          gap: 2px;
         }
 
         .round-number {
           font-size: 10px;
           color: #ccc;
-          margin-top: 2px;
         }
+
       `}</style>
     </div>
   );
@@ -332,20 +342,16 @@ function renderRoundHistory(roundWins) {
 
   if (roundNumbers.length === 0) return null;
 
+  const firstHalfRounds = roundNumbers.filter(n => n <= 12);
+  const secondHalfRounds = roundNumbers.filter(n => n > 12);
+
   return (
     <div className="round-history-line">
-      {roundNumbers.map((roundNumber) => {
-        const icon = createRoundIcon(roundNumber, roundWins[roundNumber.toString()]);
-        if (roundNumber === 12) {
-          return (
-            <span key={roundNumber}>
-              {icon}
-              <div className="rounds-divider"></div>
-            </span>
-          );
-        }
-        return icon;
-      })}
+      <div className="rounds-line">
+        {firstHalfRounds.map(roundNumber => createRoundIcon(roundNumber, roundWins[roundNumber.toString()]))}
+        {firstHalfRounds.length > 0 && secondHalfRounds.length > 0 && <div className="rounds-divider"></div>}
+        {secondHalfRounds.map(roundNumber => createRoundIcon(roundNumber, roundWins[roundNumber.toString()]))}
+      </div>
     </div>
   );
 }
