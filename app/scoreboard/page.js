@@ -51,7 +51,7 @@ export default function ScoreboardPage() {
 
   let ctPlayers = playersArray.filter(p => p.team === 'CT');
   let tPlayers = playersArray.filter(p => p.team === 'T');
-  
+
   ctPlayers.sort((a, b) => b.match_stats.kills - a.match_stats.kills);
   tPlayers.sort((a, b) => b.match_stats.kills - a.match_stats.kills);
 
@@ -74,7 +74,6 @@ export default function ScoreboardPage() {
 
       <div className="teams-stats-container">
         <div className="team-stat-container ct-side">
-          {/* Убираем обводку у team-table-header: т.е. border нет */}
           <div className="team-table-header">
             <span className="col-header-player">PLAYER</span>
             <span className="col-header">K</span>
@@ -101,9 +100,9 @@ export default function ScoreboardPage() {
 
       <style jsx global>{`
         @font-face {
-          font-family: 'BLENDERPRO-BOLD';
-          src: url('/fonts/BLENDERPRO-BOLD.woff2') format('woff2'),
-               url('/fonts/BLENDERPRO-BOLD.woff') format('woff');
+          font-family: 'BLENDERPRO-HEAVY';
+          src: url('/fonts/BLENDERPRO-HEAVY.woff2') format('woff2'),
+               url('/fonts/BLENDERPRO-HEAVY.woff') format('woff');
           font-weight: bold;
           font-style: normal;
         }
@@ -120,15 +119,16 @@ export default function ScoreboardPage() {
           width: 1000px;
           transform: scale(1.25);
           transform-origin: top center;
-          margin: 40px auto;
+          margin: 20px auto; /* Меньше отступы сверху и снизу */
           display: flex;
           flex-direction: column;
           align-items: center;
-          gap: 30px;
+          gap: 10px; /* Меньше вертикальных отступов */
         }
 
         .main-title {
-          font-size: 80px; /* еще крупнее */
+          font-family: 'BLENDERPRO-HEAVY', sans-serif;
+          font-size: 80px;
           font-weight: bold;
           text-transform: uppercase;
           color: #fff;
@@ -137,7 +137,7 @@ export default function ScoreboardPage() {
         }
 
         .map-name {
-          font-size: 24px;
+          font-size: 30px;
           font-weight: bold;
           color: #fff;
           text-transform: uppercase;
@@ -150,10 +150,10 @@ export default function ScoreboardPage() {
           justify-content: space-between;
           align-items: center;
           width: 100%;
-          background: #2e2547;
-          border: 1px solid #423769; /* обводка 1px здесь */
+          background: rgba(46,37,71,0.1); /* #2e2547 with ~90% transparency */
+          border: 1px solid #423769;
           border-radius: 0; 
-          padding: 10px 20px; 
+          padding: 5px 10px;
         }
 
         .team-info-line {
@@ -169,14 +169,14 @@ export default function ScoreboardPage() {
         }
 
         .team-name {
-          font-size: 20px;
+          font-size: 24px;
           font-weight: bold;
           text-transform: uppercase;
           color: #fff;
         }
 
         .score-middle {
-          font-size: 50px; 
+          font-size: 60px; 
           font-weight: bold;
           color: #fff;
         }
@@ -189,23 +189,23 @@ export default function ScoreboardPage() {
         }
 
         .ct-side.team-stat-container {
-          background: #6E58AB; 
+          background: rgba(110,88,171,0.1); /* #6E58AB @90% transparency */
           border: 1px solid #423769;
           border-radius: 0;
         }
 
         .t-side.team-stat-container {
-          background: #998959;
+          background: rgba(153,137,89,0.1); /* #998959 @90% transparency */
           border: 1px solid #423769;
           border-radius: 0;
         }
 
         .team-stat-container {
-          padding: 10px; 
+          padding: 5px; 
           flex: 1;
           display: flex;
           flex-direction: column;
-          gap: 10px;
+          gap: 5px;
         }
 
         .team-table-header {
@@ -214,16 +214,15 @@ export default function ScoreboardPage() {
           column-gap:20px;
           text-align: center;
           align-items: center;
-          background: rgba(0,0,0,0.3);
-          /* Убрать обводку: */
-          border: none; 
+          background: rgba(0,0,0,0.1);
+          border: none; /* убрали обводку тут */
           border-radius: 0;
           padding: 5px;
         }
 
         .col-header-player {
           text-align: left;
-          font-size: 20px; 
+          font-size: 30px; 
           font-weight: bold;
           text-transform: uppercase;
           color: #fff;
@@ -231,7 +230,7 @@ export default function ScoreboardPage() {
         }
 
         .col-header {
-          font-size: 20px; 
+          font-size: 30px; 
           font-weight: bold;
           text-transform: uppercase;
           color: #fff;
@@ -242,15 +241,15 @@ export default function ScoreboardPage() {
           grid-template-columns: 1fr 30px 30px 40px;
           column-gap:20px;
           align-items: center;
-          background: rgba(0,0,0,0.2);
+          background: rgba(0,0,0,0.1);
           /* без обводки для игрока */
           border-radius: 0;
           padding: 5px;
         }
 
         .player-img {
-          width: 45px; /* было 30, увеличили на 50% => 45px */
-          height: 45px;
+          width: 70px; /* было 45px, теперь еще на 50% больше ~68 => берем 70px */
+          height: 70px;
           object-fit: contain; 
         }
 
@@ -263,7 +262,7 @@ export default function ScoreboardPage() {
 
         .player-name {
           font-weight: bold;
-          font-size: 18px; /* больше шрифт */
+          font-size: 27px; /* было около 18px, увеличиваем на 50% ~27px */
           text-transform: uppercase;
           white-space: nowrap;
           overflow: hidden;
@@ -273,17 +272,17 @@ export default function ScoreboardPage() {
 
         .stat-value {
           font-weight: bold;
-          font-size: 18px; /* больше шрифт */
+          font-size: 27px; /* было 18px, +50% = 27px */
           text-align: center;
           color: #fff;
         }
 
         .round-history-container {
           width: 100%;
-          background: #201c2c;
+          background: rgba(32,28,44,0.1); /* #201c2c @90% transparency */
           border: 1px solid #423769;
           border-radius: 0;
-          padding: 10px;
+          padding: 5px;
           display: flex;
           flex-direction: column;
           align-items: center;
@@ -297,7 +296,6 @@ export default function ScoreboardPage() {
           margin-bottom: 5px;
         }
 
-        /* 24 раунда, равномерно по ширине */
         .halves-container {
           display: grid;
           grid-template-columns: repeat(24, 1fr);
@@ -307,30 +305,30 @@ export default function ScoreboardPage() {
 
         .round-wrapper {
           width: 100%; 
-          height: 50px; /* можно чуть увеличить высоту под увеличение */
+          height: 50px;
           display: flex;
           flex-direction: column;
           align-items: center;
           justify-content: center;
-          background: #3a3357;
+          background: rgba(58,51,87,0.1); /* #3a3357 @90% transparency */
           border: none; 
         }
 
         .round-wrapper.ct-win {
-          background: #6E58AB;
+          background: rgba(110,88,171,0.1); /* ct-win color transparent */
         }
 
         .round-wrapper.t-win {
-          background: #998959;
+          background: rgba(153,137,89,0.1); /* t-win color transparent */
         }
 
         .round-wrapper.empty {
-          background: #2f2b3c;
+          background: rgba(47,43,60,0.1); /* #2f2b3c @90% transparency */
         }
 
         .round-icon {
-          width: 20px; /* увеличиваем также иконку под масштаб */
-          height: 20px;
+          width: 30px; /* увеличить иконку пропорционально */
+          height: 30px;
           object-fit: contain;
         }
 
@@ -357,8 +355,8 @@ function renderPlayerRow(player) {
           className="player-img"
           src={`/players/${lowercaseSteamId}.png`}
           alt={name}
-          width={45} /* новые размеры */
-          height={45}
+          width={70}
+          height={70}
           onError={(e) => { e.currentTarget.src = '/players/idle.png'; }}
         />
         <div className="player-name">{name}</div>
@@ -394,8 +392,8 @@ function createRoundCell(roundNumber, result) {
   }
 
   const normalizedResult = result.toLowerCase();
-  let iconPath;
   let roundClass = '';
+  let iconPath;
 
   if (normalizedResult.startsWith('ct_win')) {
     roundClass = 'ct-win';
@@ -424,7 +422,7 @@ function createRoundCell(roundNumber, result) {
 
   return (
     <div className={`round-wrapper ${roundClass}`} key={roundNumber}>
-      <Image src={iconPath} alt={result} className="round-icon" width={20} height={20}/>
+      <Image src={iconPath} alt={result} className="round-icon" width={30} height={30}/>
       <span className="round-number">{roundNumber}</span>
     </div>
   );
