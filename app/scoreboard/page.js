@@ -1,4 +1,3 @@
-// app/scoreboard/page.js
 'use client';
 import { useEffect, useState } from 'react';
 
@@ -10,7 +9,7 @@ export default function ScoreboardPage() {
       const response = await fetch('/api/gsi');
       if (response.ok) {
         const data = await response.json();
-        if (data.length > 0) {
+        if (data.length > 0 && data[0].map && data[0].allplayers) {
           setMatchData(data[0]);
         }
       }
@@ -71,6 +70,7 @@ export default function ScoreboardPage() {
       </div>
 
       <div className="teams-wrapper">
+        {/* CT TABLE */}
         <div className="team-table ct-side">
           <div className="table-header">
             <div className="th player-col player-name">{ctTeam.name}</div>
@@ -79,11 +79,40 @@ export default function ScoreboardPage() {
             <div className="th stat-col">A</div>
             <div className="th stat-col">+/-</div>
             <div className="th stat-col">Score</div>
+            <div className="th stat-col">MVP</div>
+            <div className="th stat-col">HP</div>
+            <div className="th stat-col">Armor</div>
+            <div className="th stat-col">Helmet</div>
+            <div className="th stat-col">$</div>
+            <div className="th stat-col">EquipVal</div>
+            <div className="th stat-col">R.Kills</div>
+            <div className="th stat-col">R.HS</div>
+            <div className="th stat-col">Weapon</div>
           </div>
           <div className="players-table">
             {ctPlayers.map((player, i) => {
-              const { kills, assists, deaths, score } = player.match_stats;
+              const { kills, assists, deaths, mvps, score } = player.match_stats;
               const plusMinus = kills - deaths;
+              const state = player.state || {};
+              const health = state.health ?? '-';
+              const armor = state.armor ?? '-';
+              const helmet = state.helmet ? 'Yes' : 'No';
+              const money = state.money ?? '-';
+              const equipValue = state.equip_value ?? '-';
+              const roundKills = state.round_kills ?? '-';
+              const roundKillHS = state.round_killhs ?? '-';
+
+              // Определяем активное оружие
+              let activeWeapon = '-';
+              if (player.weapons) {
+                for (const wKey in player.weapons) {
+                  if (player.weapons[wKey].state === 'active') {
+                    activeWeapon = wKey;
+                    break;
+                  }
+                }
+              }
+
               return (
                 <div className="player-row" key={i}>
                   <div className="player-col player-name">{player.name}</div>
@@ -92,17 +121,28 @@ export default function ScoreboardPage() {
                   <div className="stat-col">{assists}</div>
                   <div className="stat-col">{(plusMinus >= 0 ? '+' : '') + plusMinus}</div>
                   <div className="stat-col">{score}</div>
+                  <div className="stat-col">{mvps ?? 0}</div>
+                  <div className="stat-col">{health}</div>
+                  <div className="stat-col">{armor}</div>
+                  <div className="stat-col">{helmet}</div>
+                  <div className="stat-col">{money}</div>
+                  <div className="stat-col">{equipValue}</div>
+                  <div className="stat-col">{roundKills}</div>
+                  <div className="stat-col">{roundKillHS}</div>
+                  <div className="stat-col">{activeWeapon}</div>
                 </div>
               );
             })}
           </div>
         </div>
 
+        {/* ROUND HISTORY */}
         <div className="round-history">
           <div className="round-history-title">Round History</div>
           {renderRoundHistory(matchData.map.round_wins)}
         </div>
 
+        {/* T TABLE */}
         <div className="team-table t-side">
           <div className="table-header">
             <div className="th player-col player-name">{tTeam.name}</div>
@@ -111,11 +151,39 @@ export default function ScoreboardPage() {
             <div className="th stat-col">A</div>
             <div className="th stat-col">+/-</div>
             <div className="th stat-col">Score</div>
+            <div className="th stat-col">MVP</div>
+            <div className="th stat-col">HP</div>
+            <div className="th stat-col">Armor</div>
+            <div className="th stat-col">Helmet</div>
+            <div className="th stat-col">$</div>
+            <div className="th stat-col">EquipVal</div>
+            <div className="th stat-col">R.Kills</div>
+            <div className="th stat-col">R.HS</div>
+            <div className="th stat-col">Weapon</div>
           </div>
           <div className="players-table">
             {tPlayers.map((player, i) => {
-              const { kills, assists, deaths, score } = player.match_stats;
+              const { kills, assists, deaths, mvps, score } = player.match_stats;
               const plusMinus = kills - deaths;
+              const state = player.state || {};
+              const health = state.health ?? '-';
+              const armor = state.armor ?? '-';
+              const helmet = state.helmet ? 'Yes' : 'No';
+              const money = state.money ?? '-';
+              const equipValue = state.equip_value ?? '-';
+              const roundKills = state.round_kills ?? '-';
+              const roundKillHS = state.round_killhs ?? '-';
+
+              let activeWeapon = '-';
+              if (player.weapons) {
+                for (const wKey in player.weapons) {
+                  if (player.weapons[wKey].state === 'active') {
+                    activeWeapon = wKey;
+                    break;
+                  }
+                }
+              }
+
               return (
                 <div className="player-row" key={i}>
                   <div className="player-col player-name">{player.name}</div>
@@ -124,6 +192,15 @@ export default function ScoreboardPage() {
                   <div className="stat-col">{assists}</div>
                   <div className="stat-col">{(plusMinus >= 0 ? '+' : '') + plusMinus}</div>
                   <div className="stat-col">{score}</div>
+                  <div className="stat-col">{mvps ?? 0}</div>
+                  <div className="stat-col">{health}</div>
+                  <div className="stat-col">{armor}</div>
+                  <div className="stat-col">{helmet}</div>
+                  <div className="stat-col">{money}</div>
+                  <div className="stat-col">{equipValue}</div>
+                  <div className="stat-col">{roundKills}</div>
+                  <div className="stat-col">{roundKillHS}</div>
+                  <div className="stat-col">{activeWeapon}</div>
                 </div>
               );
             })}
@@ -221,12 +298,14 @@ export default function ScoreboardPage() {
           background: rgba(0,0,0,0.3);
           border-radius: 8px;
           padding: 10px;
+          overflow-x: auto;
         }
 
         .table-header {
           display: flex;
           padding: 5px 0;
           border-bottom: 1px solid #555;
+          min-width: 1000px; /* увеличиваем минимальную ширину для большого числа колонок */
         }
 
         .th {
@@ -236,11 +315,12 @@ export default function ScoreboardPage() {
           color: #ccc;
           text-transform: uppercase;
           padding: 5px;
+          font-size: 12px;
         }
 
         .player-col {
           flex: 2;
-          text-align: center; 
+          text-align: center;
         }
 
         .stat-col {
@@ -251,7 +331,8 @@ export default function ScoreboardPage() {
         .players-table {
           border-radius: 0 0 8px 8px;
           padding: 10px;
-          font-size: 14px;
+          font-size: 12px;
+          min-width: 1000px; /* чтобы столбцы поместились */
         }
 
         .player-row {
@@ -274,7 +355,6 @@ export default function ScoreboardPage() {
           flex: 2;
         }
 
-        /* Round History */
         .round-history-title {
           font-size: 16px;
           color: #ccc;

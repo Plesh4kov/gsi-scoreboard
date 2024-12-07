@@ -1,5 +1,4 @@
-// app/api/gsi/route.js
-let lastGSIData = {}; // Глобальная переменная для хранения последних данных
+let lastGSIData = {};
 
 export async function POST(request) {
   const data = await request.json();
@@ -9,7 +8,6 @@ export async function POST(request) {
 }
 
 export async function GET() {
-  // Возвращаем данные в формате массива, как в предыдущем примере
   return new Response(JSON.stringify([lastGSIData]), {
     status: 200,
     headers: {
