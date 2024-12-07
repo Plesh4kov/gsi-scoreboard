@@ -1,6 +1,6 @@
 'use client';
-
 import { useEffect, useState } from 'react';
+import Image from 'next/image'; // Используем next/image
 
 export default function ScoreboardPage() {
   const [matchData, setMatchData] = useState(null);
@@ -41,8 +41,6 @@ export default function ScoreboardPage() {
   const tTeam = matchData.map.team_t;
   const allPlayers = matchData.allplayers;
 
-  // Преобразуем allPlayers в массив с включением steamid
-  // Ключи allplayers - это steamid, используем их для фото
   const playersArray = Object.entries(allPlayers).map(([steamid, playerData]) => ({
     steamid,
     ...playerData
@@ -51,7 +49,6 @@ export default function ScoreboardPage() {
   let ctPlayers = playersArray.filter(p => p.team === 'CT');
   let tPlayers = playersArray.filter(p => p.team === 'T');
 
-  // Сортируем по количеству убийств
   ctPlayers.sort((a, b) => b.match_stats.kills - a.match_stats.kills);
   tPlayers.sort((a, b) => b.match_stats.kills - a.match_stats.kills);
 
@@ -61,7 +58,7 @@ export default function ScoreboardPage() {
         <div className="match-info">
           <div className="team-scores">
             <div className="team-block ct-side">
-              <img alt="CT Team" className="team-logo" src={`teams/${ctTeam.name}.png`} />
+              <Image alt="CT Team" className="team-logo" src={`teams/${ctTeam.name}.png`} width={50} height={50}/>
               <span className="team-name">{ctTeam.name}</span>
               <span className="score ct">{ctTeam.score}</span>
             </div>
@@ -69,7 +66,7 @@ export default function ScoreboardPage() {
             <div className="team-block t-side">
               <span className="score t">{tTeam.score}</span>
               <span className="team-name">{tTeam.name}</span>
-              <img alt="T Team" className="team-logo" src={`teams/${tTeam.name}.png`} />
+              <Image alt="T Team" className="team-logo" src={`teams/${tTeam.name}.png`} width={50} height={50}/>
             </div>
           </div>
           <div className="map-info">{matchData.map.name}</div>
@@ -77,25 +74,25 @@ export default function ScoreboardPage() {
       </div>
 
       <div className="teams-wrapper">
-        {/* Блок для CT-команды */}
+        {/* CT TEAM */}
         <div className="team-row">
           <div className="team-header ct-side">
-            <img alt="CT Team" className="team-logo-header" src={`teams/${ctTeam.name}.png`} />
+            <Image alt="CT Team" className="team-logo-header" src={`teams/${ctTeam.name}.png`} width={40} height={40} />
             <span className="team-name-header">{ctTeam.name}</span>
           </div>
           <div className="players-row">
-            {ctPlayers.map((player, i) => renderPlayerCard(player))}
+            {ctPlayers.map((player) => renderPlayerCard(player))}
           </div>
         </div>
 
-        {/* Блок для T-команды */}
+        {/* T TEAM */}
         <div className="team-row">
           <div className="team-header t-side">
-            <img alt="T Team" className="team-logo-header" src={`teams/${tTeam.name}.png`} />
+            <Image alt="T Team" className="team-logo-header" src={`teams/${tTeam.name}.png`} width={40} height={40} />
             <span className="team-name-header">{tTeam.name}</span>
           </div>
           <div className="players-row">
-            {tPlayers.map((player, i) => renderPlayerCard(player))}
+            {tPlayers.map((player) => renderPlayerCard(player))}
           </div>
         </div>
       </div>
@@ -164,9 +161,7 @@ export default function ScoreboardPage() {
         }
 
         .team-logo {
-          width: 50px;
-          height: 50px;
-          object-fit: contain;
+          border-radius: 4px;
         }
 
         .score-divider {
@@ -197,12 +192,6 @@ export default function ScoreboardPage() {
           align-items: center;
           gap: 10px;
           margin-bottom: 20px;
-        }
-
-        .team-logo-header {
-          width: 40px;
-          height: 40px;
-          object-fit: contain;
         }
 
         .team-name-header {
@@ -237,13 +226,8 @@ export default function ScoreboardPage() {
           text-align: center;
         }
 
-        .player-card img {
-          width: 60px;
-          height: 60px;
+        .player-card :global(img) {
           border-radius: 50%;
-          object-fit: cover;
-          margin-bottom: 10px;
-          border: 2px solid #555;
         }
 
         .player-name {
@@ -283,17 +267,26 @@ export default function ScoreboardPage() {
 function renderPlayerCard(player) {
   const { name, steamid } = player;
   const { kills, deaths, assists } = player.match_stats;
-  // KD ratio
   const kd = deaths === 0 ? kills.toString() : (kills/deaths).toFixed(2);
-
-  // Заглушки для ADR, KAST, Damage
+  
   const ADR = 'N/A';
   const KAST = 'N/A';
   const Damage = 'N/A';
 
+  // Предполагается, что /players/default.jpg есть, если нет файла по steamid
+  // Т.к. Image не имеет onError, можно попытаться заранее знать о наличии файла
+  // Или положить одинаковые файлы для теста.
   return (
     <div className="player-card" key={steamid}>
-      <img src={`/players/${steamid}.jpg`} alt={name} onError={(e) => { e.currentTarget.src = '/players/default.jpg'; }} />
+      <Image 
+        src={`/players/${steamid}.jpg`} 
+        alt={name} 
+        width={60} 
+        height={60}
+        onLoadingComplete={(e) => {
+          // Нет onError, если файла нет, попробуйте предварительно проверить или всегда иметь default.jpg
+        }}
+      />
       <div className="player-name">{name}</div>
       <div className="player-stats">
         <div><span className="stat-label">K:</span><span className="stat-value">{kills}</span></div>
