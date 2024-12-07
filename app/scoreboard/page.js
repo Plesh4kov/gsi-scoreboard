@@ -27,13 +27,13 @@ export default function ScoreboardPage() {
       <div style={{
         color: '#fff',
         fontFamily: 'BLENDERPRO-BOLD, sans-serif',
-        background: '#000',
+        backgroundColor: '#1A0F2F',
         height:'100vh',
         display:'flex',
         alignItems:'center',
         justifyContent:'center'
       }}>
-        <h2 style={{fontSize: '32px', textTransform:'uppercase', letterSpacing:'2px'}}>Loading...</h2>
+        <h2 style={{fontSize: '32px', letterSpacing:'1px'}}>Loading...</h2>
       </div>
     );
   }
@@ -51,14 +51,14 @@ export default function ScoreboardPage() {
 
   let ctPlayers = playersArray.filter(p => p.team === 'CT');
   let tPlayers = playersArray.filter(p => p.team === 'T');
-
+  
   ctPlayers.sort((a, b) => b.match_stats.kills - a.match_stats.kills);
   tPlayers.sort((a, b) => b.match_stats.kills - a.match_stats.kills);
 
   return (
     <div className="scoreboard-container">
-      <div className="main-title">MATCH RESULTS</div>
-      <div className="map-label">MAP: {mapName}</div>
+      <div className="map-name">MAP: {mapName}</div>
+
       <div className="teams-line">
         <div className="team-info-line ct-side">
           <Image alt="CT Team" src={`/teams/${ctTeam.name}.png`} width={40} height={40} className="team-logo"/>
@@ -109,47 +109,27 @@ export default function ScoreboardPage() {
         body {
           margin: 0;
           padding: 0;
-          background: linear-gradient(to bottom right, #120a1f, #1a0f2f 60%, #201c2c);
+          background: #1A0F2F;
           font-family: 'BLENDERPRO-BOLD', sans-serif;
           color: #fff;
         }
 
         .scoreboard-container {
-          width: 90%;
-          max-width: 1400px;
+          width: 80%;
+          max-width: 1200px;
           margin: 40px auto;
           display: flex;
           flex-direction: column;
           align-items: center;
-          position: relative;
+          gap: 30px;
         }
 
-        /* A subtle fade overlay at the bottom (if needed) */
-        .scoreboard-container::after {
-          content: "";
-          position: absolute;
-          bottom: 0;
-          left: 0; right: 0;
-          height: 100px;
-          background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.9) 100%);
-          pointer-events: none;
-        }
-
-        .main-title {
-          font-size: 64px;
+        .map-name {
+          font-size: 24px;
           font-weight: bold;
-          text-transform: uppercase;
           color: #fff;
-          letter-spacing: 2px;
-          text-shadow: 0 0 8px rgba(0,0,0,0.8);
-          margin-bottom: 10px;
-        }
-
-        .map-label {
-          font-size: 18px;
           text-transform: uppercase;
-          color: #ccc;
-          margin-bottom: 30px;
+          letter-spacing: 1px;
         }
 
         .teams-line {
@@ -160,8 +140,6 @@ export default function ScoreboardPage() {
           background: #2e2547;
           border-radius: 8px;
           padding: 10px 20px; 
-          margin-bottom: 30px;
-          box-shadow: 0 0 10px rgba(0,0,0,0.5);
         }
 
         .team-info-line {
@@ -177,26 +155,23 @@ export default function ScoreboardPage() {
         }
 
         .team-name {
-          font-size: 16px;
+          font-size: 14px;
           font-weight: bold;
           text-transform: uppercase;
           color: #fff;
-          text-shadow: 0 0 4px rgba(0,0,0,0.7);
         }
 
         .score-middle {
-          font-size: 48px; 
+          font-size: 32px; 
           font-weight: bold;
           color: #fff;
-          text-shadow: 0 0 5px rgba(0,0,0,0.7);
         }
 
         .teams-stats-container {
           width: 100%;
           display: flex;
-          gap: 40px;
+          gap: 20px;
           justify-content: space-between;
-          margin-bottom: 30px;
         }
 
         .ct-side.team-stat-container {
@@ -214,13 +189,11 @@ export default function ScoreboardPage() {
           display: flex;
           flex-direction: column;
           gap: 10px;
-          position: relative;
-          box-shadow: 0 0 10px rgba(0,0,0,0.5);
         }
 
         .team-table-header {
           display: grid;
-          grid-template-columns: [player] 1fr [kills] 40px [deaths] 40px [kd] 50px;
+          grid-template-columns: [player] 1fr [kills] 30px [deaths] 30px [kd] 40px;
           text-align: center;
           gap: 5px;
           align-items: center;
@@ -243,7 +216,7 @@ export default function ScoreboardPage() {
 
         .player-row {
           display: grid;
-          grid-template-columns: [player] 1fr [kills] 40px [deaths] 40px [kd] 50px;
+          grid-template-columns: [player] 1fr [kills] 30px [deaths] 30px [kd] 40px;
           align-items: center;
           background: rgba(0,0,0,0.2);
           padding: 5px;
@@ -288,8 +261,6 @@ export default function ScoreboardPage() {
           background: #201c2c;
           border-radius: 8px;
           padding: 10px;
-          margin-bottom: 30px;
-          box-shadow: 0 0 10px rgba(0,0,0,0.5);
           display: flex;
           flex-direction: column;
           align-items: center;
