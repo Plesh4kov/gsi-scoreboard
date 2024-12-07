@@ -275,19 +275,17 @@ export default function ScoreboardPage() {
           justify-content: space-between;
           width: 100%;
           position: relative;
-          /* Добавляем горизонтальный скролл при необходимости */
-          overflow-x: auto;
+          overflow: hidden; /* убираем скролл, всё должно поместиться */
         }
 
-        .first-half-rounds,
-        .second-half-rounds {
+        /* Теперь делаем так, чтобы все раунды были в одну линию и подстраивались по ширине */
+        .first-half-rounds, .second-half-rounds {
           display: flex;
           flex-wrap: nowrap;
           gap: 10px;
           align-items: center;
-          justify-content: center;
-          flex: 1;
-          /* Все в одну линию, без переноса */
+          /* Вместо overflow, позволим им сжиматься */
+          flex-shrink: 1;
         }
 
         .rounds-divider {
@@ -295,13 +293,10 @@ export default function ScoreboardPage() {
           background: #ccc;
           height: 100px;
           margin: 0 30px;
-          position: relative;
-          flex-shrink: 0;
+          flex-shrink:0;
         }
 
         .round-wrapper {
-          width: 40px;
-          height: 60px;
           display: flex;
           flex-direction: column;
           align-items: center;
@@ -309,8 +304,15 @@ export default function ScoreboardPage() {
           gap: 2px;
           border-radius: 2px;
           position: relative;
+
+          /* Ключевые настройки: 
+             Не фиксируем ширину и высоту.
+             Позволяем элементам сжиматься. */
+          flex-shrink: 1;
+          flex-grow: 1;
+          min-width: 0; /* позволяет сжимать ширину меньше контента */
+          padding: 5px;
           background: #3a3357;
-          flex-shrink: 0;
         }
 
         .round-wrapper.ct-win {
@@ -322,8 +324,8 @@ export default function ScoreboardPage() {
         }
 
         .round-icon {
-          width: 24px;
-          height: 24px;
+          max-width: 100%;
+          height: auto;
           object-fit: contain;
         }
 
@@ -416,7 +418,7 @@ function createRoundCell(roundNumber, result) {
 
   return (
     <div className={`round-wrapper ${roundClass}`} key={roundNumber}>
-      <Image src={iconPath} alt={result} className="round-icon" width={24} height={24} />
+      <Image src={iconPath} alt={result} className="round-icon" />
       <span className="round-number">{roundNumber}</span>
     </div>
   );
