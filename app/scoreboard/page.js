@@ -55,22 +55,22 @@ export default function Page() {
   const totalRounds = 24;
   const rounds = Array.from({length: totalRounds}, (_, i) => i+1);
 
-  // Порядок игроков CT сверху вниз:
+  // Порядок игроков CT сверху вниз
   const ctPlayersOrder = [
-    {nameClass:".playerlongname9", killsClass:"_0", deathsClass:"_011", adrClass:"_021"},
-    {nameClass:".playerlongname7", killsClass:"_03", deathsClass:"_013", adrClass:"_023"},
-    {nameClass:".playerlongname5", killsClass:"_05", deathsClass:"_015", adrClass:"_025"},
-    {nameClass:".playerlongname3", killsClass:"_07", deathsClass:"_017", adrClass:"_027"},
-    {nameClass:".playerlongname",  killsClass:"_09", deathsClass:"_019", adrClass:"_029"}
+    {nameClass:"playerlongname9", killsClass:"_0", deathsClass:"_011", adrClass:"_021"},
+    {nameClass:"playerlongname7", killsClass:"_03", deathsClass:"_013", adrClass:"_023"},
+    {nameClass:"playerlongname5", killsClass:"_05", deathsClass:"_015", adrClass:"_025"},
+    {nameClass:"playerlongname3", killsClass:"_07", deathsClass:"_017", adrClass:"_027"},
+    {nameClass:"playerlongname",  killsClass:"_09", deathsClass:"_019", adrClass:"_029"}
   ];
 
-  // Порядок игроков T сверху вниз:
+  // Порядок игроков T сверху вниз
   const tPlayersOrder = [
-    {nameClass:".playerlongname10", killsClass:"_02", deathsClass:"_012", adrClass:"_022"},
-    {nameClass:".playerlongname8",  killsClass:"_04", deathsClass:"_014", adrClass:"_024"},
-    {nameClass:".playerlongname6",  killsClass:"_06", deathsClass:"_016", adrClass:"_026"},
-    {nameClass:".playerlongname4",  killsClass:"_08", deathsClass:"_018", adrClass:"_028"},
-    {nameClass:".playerlongname2",  killsClass:"_010", deathsClass:"_020", adrClass:"_030"}
+    {nameClass:"playerlongname10", killsClass:"_02", deathsClass:"_012", adrClass:"_022"},
+    {nameClass:"playerlongname8",  killsClass:"_04", deathsClass:"_014", adrClass:"_024"},
+    {nameClass:"playerlongname6",  killsClass:"_06", deathsClass:"_016", adrClass:"_026"},
+    {nameClass:"playerlongname4",  killsClass:"_08", deathsClass:"_018", adrClass:"_028"},
+    {nameClass:"playerlongname2",  killsClass:"_010", deathsClass:"_020", adrClass:"_030"}
   ];
 
   function getRoundBackground(result) {
@@ -157,11 +157,9 @@ export default function Page() {
         <div className="rectangle-647"></div>
         <div className="rectangle-654"></div>
 
-        {/* Логотипы команд */}
         <Image className="rectangle-49" src={`/teams/${tTeam.name}.png`} alt="" width={89} height={89} style={{position:'absolute',left:'1536px',top:'181px',objectFit:'cover'}}/>
         <Image className="rectangle-47" src={`/teams/${ctTeam.name}.png`} alt="" width={88} height={88} style={{position:'absolute',left:'242px',top:'186px',objectFit:'cover'}}/>
 
-        {/* Заглушки-карточки */}
         <Image className="player-photo" alt="" src="https://via.placeholder.com/127x81" width={127} height={81} style={{position:'absolute',left:'252px',top:'744px',boxShadow:'0px 4px 4px rgba(0,0,0,0.25)',objectFit:'cover'}}/>
         <Image className="player-photo2" alt="" src="https://via.placeholder.com/127x81" width={127} height={81} style={{position:'absolute',left:'969px',top:'744px',boxShadow:'0px 4px 4px rgba(0,0,0,0.25)',objectFit:'cover'}}/>
         <Image className="player-photo3" alt="" src="https://via.placeholder.com/127x81" width={127} height={81} style={{position:'absolute',left:'252px',top:'656px',boxShadow:'0px 4px 4px rgba(0,0,0,0.25)',objectFit:'cover'}}/>
@@ -185,12 +183,10 @@ export default function Page() {
         <div className="adr">ADR</div>
         <div className="adr2">ADR</div>
 
-        {/* Счет */}
         <div className="_031" style={{textAlign:'center',color:'#847CA1',fontSize:'100px',fontFamily:'Blender Pro',fontWeight:'900',lineHeight:'82.56px',position:'absolute',left:'810px',top:'194px'}}>{ctTeam.score}</div>
         <div className="_2" style={{textAlign:'center',color:'#EADAA5',fontSize:'100px',fontFamily:'Blender Pro',fontWeight:'900',lineHeight:'82.56px',position:'absolute',left:'985px',top:'196px'}}>{tTeam.score}</div>
         <div className="div" style={{textAlign:'center',color:'#575170',fontSize:'99px',fontFamily:'Blender Pro',fontWeight:'900',lineHeight:'81.73px',position:'absolute',left:'933px',top:'190px'}}>:</div>
 
-        {/* MATCH STATS and MAP */}
         <div className="match-stats" style={{
           position:'absolute', left:'539px', top:'17px', width:'803px', height:'140px',
           textAlign:'center', color:'#fff', fontSize:'91px', fontFamily:'Blender Pro', fontWeight:'900', textTransform:'uppercase',lineHeight:'75.13px'
@@ -207,10 +203,10 @@ export default function Page() {
           const { name, kills, deaths, adr } = renderPlayerData(pl);
           return (
             <React.Fragment key={pl.steamid}>
-              <div className={mapping.nameClass.replace('.','')} style={{position:'absolute',color:'#fff',fontFamily:'Blender Pro',fontSize:'31px',fontWeight:'700',textTransform:'uppercase',width:'301px',whiteSpace:'nowrap',overflow:'hidden'}}>{name}</div>
-              <div className={mapping.killsClass.replace('.','')} style={{position:'absolute',color:'#fff',fontFamily:'Blender Pro',fontSize:'40px',fontWeight:'700',textTransform:'uppercase'}}>{kills}</div>
-              <div className={mapping.deathsClass.replace('.','')} style={{position:'absolute',color:'#fff',fontFamily:'Blender Pro',fontSize:'40px',fontWeight:'700',textTransform:'uppercase'}}>{deaths}</div>
-              <div className={mapping.adrClass.replace('.','')} style={{position:'absolute',color:'#fff',fontFamily:'Blender Pro',fontSize:'40px',fontWeight:'700',textTransform:'uppercase'}}>{adr}</div>
+              <div className={mapping.nameClass} style={{position:'absolute',color:'#fff',fontFamily:'Blender Pro',fontSize:'31px',fontWeight:'700',textTransform:'uppercase',width:'301px',whiteSpace:'nowrap',overflow:'hidden'}}>{name}</div>
+              <div className={mapping.killsClass} style={{position:'absolute',color:'#fff',fontFamily:'Blender Pro',fontSize:'40px',fontWeight:'700',textTransform:'uppercase'}}>{kills}</div>
+              <div className={mapping.deathsClass} style={{position:'absolute',color:'#fff',fontFamily:'Blender Pro',fontSize:'40px',fontWeight:'700',textTransform:'uppercase'}}>{deaths}</div>
+              <div className={mapping.adrClass} style={{position:'absolute',color:'#fff',fontFamily:'Blender Pro',fontSize:'40px',fontWeight:'700',textTransform:'uppercase'}}>{adr}</div>
             </React.Fragment>
           );
         })}
@@ -221,10 +217,10 @@ export default function Page() {
           const { name, kills, deaths, adr } = renderPlayerData(pl);
           return (
             <React.Fragment key={pl.steamid}>
-              <div className={mapping.nameClass.replace('.','')} style={{position:'absolute',color:'#fff',fontFamily:'Blender Pro',fontSize:'31px',fontWeight:'700',textTransform:'uppercase',width:'301px',whiteSpace:'nowrap',overflow:'hidden',textAlign:'left'}}>{name}</div>
-              <div className={mapping.killsClass.replace('.','')} style={{position:'absolute',color:'#fff',fontFamily:'Blender Pro',fontSize:'40px',fontWeight:'700',textTransform:'uppercase'}}>{kills}</div>
-              <div className={mapping.deathsClass.replace('.','')} style={{position:'absolute',color:'#fff',fontFamily:'Blender Pro',fontSize:'40px',fontWeight:'700',textTransform:'uppercase'}}>{deaths}</div>
-              <div className={mapping.adrClass.replace('.','')} style={{position:'absolute',color:'#fff',fontFamily:'Blender Pro',fontSize:'40px',fontWeight:'700',textTransform:'uppercase'}}>{adr}</div>
+              <div className={mapping.nameClass} style={{position:'absolute',color:'#fff',fontFamily:'Blender Pro',fontSize:'31px',fontWeight:'700',textTransform:'uppercase',width:'301px',whiteSpace:'nowrap',overflow:'hidden',textAlign:'left'}}>{name}</div>
+              <div className={mapping.killsClass} style={{position:'absolute',color:'#fff',fontFamily:'Blender Pro',fontSize:'40px',fontWeight:'700',textTransform:'uppercase'}}>{kills}</div>
+              <div className={mapping.deathsClass} style={{position:'absolute',color:'#fff',fontFamily:'Blender Pro',fontSize:'40px',fontWeight:'700',textTransform:'uppercase'}}>{deaths}</div>
+              <div className={mapping.adrClass} style={{position:'absolute',color:'#fff',fontFamily:'Blender Pro',fontSize:'40px',fontWeight:'700',textTransform:'uppercase'}}>{adr}</div>
             </React.Fragment>
           );
         })}
@@ -264,7 +260,23 @@ export default function Page() {
             </div>
           );
         })}
-        
+
+        <style jsx global>{`
+          .compare-mvp,
+          .compare-mvp * {
+            box-sizing: border-box;
+          }
+          .compare-mvp {
+            height: 1080px;
+            position: relative;
+            box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+            overflow: hidden;
+          }
+          /* Здесь вставьте все ваши стили для .rectangle-..., .playerlongname..., ._0, ._011 и т.д. */
+          /* Из вашего кода замените class на className. Сейчас у нас они есть как className. */
+          /* Убедитесь, что все классы playerlongname, _0, _011, и т.д. определены либо используйте inline-стили как мы сейчас делаем. */
+        `}</style>
+
       </div>
     </div>
   );
