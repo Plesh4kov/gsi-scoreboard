@@ -100,13 +100,6 @@ export default function Page() {
     return { name, kills, deaths, adr };
   }
 
-  const colHeaderStyle = {
-    fontSize:'20px',
-    fontWeight:'bold',
-    textTransform:'uppercase',
-    color:'#fff'
-  };
-
   return (
     <div style={{width:'100%',height:'100vh',display:'flex',justifyContent:'center',alignItems:'center',background:'none'}}>
       <div 
@@ -168,7 +161,7 @@ export default function Page() {
         <Image className="rectangle-49" src={`/teams/${tTeam.name}.png`} alt="" width={89} height={89} style={{position:'absolute',left:'1536px',top:'181px',objectFit:'cover'}}/>
         <Image className="rectangle-47" src={`/teams/${ctTeam.name}.png`} alt="" width={88} height={88} style={{position:'absolute',left:'242px',top:'186px',objectFit:'cover'}}/>
 
-        {/* player-photo* просто заглушки */}
+        {/* Заглушки-карточки */}
         <Image className="player-photo" alt="" src="https://via.placeholder.com/127x81" width={127} height={81} style={{position:'absolute',left:'252px',top:'744px',boxShadow:'0px 4px 4px rgba(0,0,0,0.25)',objectFit:'cover'}}/>
         <Image className="player-photo2" alt="" src="https://via.placeholder.com/127x81" width={127} height={81} style={{position:'absolute',left:'969px',top:'744px',boxShadow:'0px 4px 4px rgba(0,0,0,0.25)',objectFit:'cover'}}/>
         <Image className="player-photo3" alt="" src="https://via.placeholder.com/127x81" width={127} height={81} style={{position:'absolute',left:'252px',top:'656px',boxShadow:'0px 4px 4px rgba(0,0,0,0.25)',objectFit:'cover'}}/>
@@ -192,12 +185,12 @@ export default function Page() {
         <div className="adr">ADR</div>
         <div className="adr2">ADR</div>
 
-        {/* Счёт */}
+        {/* Счет */}
         <div className="_031" style={{textAlign:'center',color:'#847CA1',fontSize:'100px',fontFamily:'Blender Pro',fontWeight:'900',lineHeight:'82.56px',position:'absolute',left:'810px',top:'194px'}}>{ctTeam.score}</div>
         <div className="_2" style={{textAlign:'center',color:'#EADAA5',fontSize:'100px',fontFamily:'Blender Pro',fontWeight:'900',lineHeight:'82.56px',position:'absolute',left:'985px',top:'196px'}}>{tTeam.score}</div>
         <div className="div" style={{textAlign:'center',color:'#575170',fontSize:'99px',fontFamily:'Blender Pro',fontWeight:'900',lineHeight:'81.73px',position:'absolute',left:'933px',top:'190px'}}>:</div>
 
-        {/* MAP: Nuke and MATCH STATS */}
+        {/* MATCH STATS and MAP */}
         <div className="match-stats" style={{
           position:'absolute', left:'539px', top:'17px', width:'803px', height:'140px',
           textAlign:'center', color:'#fff', fontSize:'91px', fontFamily:'Blender Pro', fontWeight:'900', textTransform:'uppercase',lineHeight:'75.13px'
@@ -208,7 +201,7 @@ export default function Page() {
           textAlign:'center', color:'#fff', fontSize:'29px', fontFamily:'Blender Pro', fontWeight:'500', lineHeight:'23.94px'
         }}>MAP: {mapName}</div>
 
-        {/* Подставляем CT игроков */}
+        {/* CT Players */}
         {ctPlayers.map((pl,i) => {
           const mapping = ctPlayersOrder[i];
           const { name, kills, deaths, adr } = renderPlayerData(pl);
@@ -222,7 +215,7 @@ export default function Page() {
           );
         })}
 
-        {/* Подставляем T игроков */}
+        {/* T Players */}
         {tPlayers.map((pl,i)=>{
           const mapping = tPlayersOrder[i];
           const { name, kills, deaths, adr } = renderPlayerData(pl);
@@ -236,7 +229,7 @@ export default function Page() {
           );
         })}
 
-        {/* Отрисовка 24 раундов */}
+        {/* Раунды */}
         {rounds.map((roundNumber, i) => {
           const result = roundWins[roundNumber.toString()] || null;
           const baseLeft = 247;
@@ -271,7 +264,7 @@ export default function Page() {
             </div>
           );
         })}
-
+        
       </div>
     </div>
   );
