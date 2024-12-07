@@ -155,12 +155,13 @@ export default function ScoreboardPage() {
           text-transform: uppercase;
         }
 
+        /* Используем новые цвета для команд */
         .ct-side .team-name {
-          color: #c94af1;
+          color: #6E58AB;
         }
 
         .t-side .team-name {
-          color: #e0bf75;
+          color: #998959;
         }
 
         .score-middle {
@@ -176,8 +177,16 @@ export default function ScoreboardPage() {
           justify-content: space-between;
         }
 
+        /* Задаём цвет фона для контейнера команд */
+        .ct-side.team-stat-container {
+          background: #6E58AB;
+        }
+
+        .t-side.team-stat-container {
+          background: #998959;
+        }
+
         .team-stat-container {
-          background: #2a2440;
           border-radius: 8px;
           padding: 10px;
           flex: 1;
@@ -192,7 +201,7 @@ export default function ScoreboardPage() {
           text-align: center;
           gap: 10px;
           align-items: center;
-          background: #201c2c;
+          background: rgba(0,0,0,0.3);
           border-radius: 4px;
           padding: 10px;
         }
@@ -201,7 +210,7 @@ export default function ScoreboardPage() {
           font-size: 14px;
           font-weight: bold;
           text-transform: uppercase;
-          color: #ccc;
+          color: #fff;
         }
 
         .col-header-player {
@@ -213,7 +222,7 @@ export default function ScoreboardPage() {
           display: grid;
           grid-template-columns: [player] 1fr [kills] 60px [deaths] 60px [kd] 60px;
           align-items: center;
-          background: #3a3357;
+          background: rgba(0,0,0,0.2);
           padding: 10px;
           border-radius: 8px;
           gap: 10px;
@@ -247,6 +256,7 @@ export default function ScoreboardPage() {
           font-weight: bold;
           font-size: 14px;
           text-align: center;
+          color: #fff;
         }
 
         .round-history-container {
@@ -264,8 +274,7 @@ export default function ScoreboardPage() {
           text-transform: uppercase;
           color: #fff;
           margin-bottom: 20px;
-          text-align: left;
-          padding-left: 10px;
+          text-align: center; /* По центру */
         }
 
         .halves-container {
@@ -279,7 +288,7 @@ export default function ScoreboardPage() {
         .first-half-rounds,
         .second-half-rounds {
           display: flex;
-          gap: 5px;
+          gap: 10px;
           flex-wrap: nowrap;
           align-items: center;
         }
@@ -297,14 +306,15 @@ export default function ScoreboardPage() {
         .rounds-divider {
           width: 2px;
           background: #ccc;
-          height: 80px;
+          height: 100px; /* побольше */
           margin: 0 30px;
           position: relative;
         }
 
+        /* Увеличиваем размер раундов */
         .round-wrapper {
-          width: 30px;
-          height: 50px;
+          width: 40px;
+          height: 60px;
           display: flex;
           flex-direction: column;
           align-items: center;
@@ -315,23 +325,24 @@ export default function ScoreboardPage() {
           background: #3a3357;
         }
 
+        /* Цвета по сторонам */
         .round-wrapper.ct-win {
-          background: #3b3a9f;
+          background: #6E58AB; /* CT цвет */
         }
 
         .round-wrapper.t-win {
-          background: #9f3b3b;
+          background: #998959; /* T цвет */
         }
 
         .round-icon {
-          width: 16px;
-          height: 16px;
+          width: 24px;
+          height: 24px;
           object-fit: contain;
         }
 
         .round-number {
-          font-size: 10px;
-          color: #ccc;
+          font-size: 12px;
+          color: #fff;
         }
       `}</style>
     </div>
@@ -418,7 +429,7 @@ function createRoundCell(roundNumber, result) {
 
   return (
     <div className={`round-wrapper ${roundClass}`} key={roundNumber}>
-      <Image src={iconPath} alt={result} className="round-icon" width={16} height={16} />
+      <Image src={iconPath} alt={result} className="round-icon" width={24} height={24} />
       <span className="round-number">{roundNumber}</span>
     </div>
   );
