@@ -1,5 +1,6 @@
 "use client";
 
+import React from 'react';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 
@@ -48,7 +49,6 @@ export default function Page() {
     ...playerData
   }));
 
-  // Сортируем и берём по 5 игроков
   let ctPlayers = playersArray.filter(p => p.team === 'CT').sort((a,b)=>b.match_stats.kills - a.match_stats.kills).slice(0,5);
   let tPlayers = playersArray.filter(p => p.team === 'T').sort((a,b)=>b.match_stats.kills - a.match_stats.kills).slice(0,5);
 
@@ -56,21 +56,7 @@ export default function Page() {
   const rounds = Array.from({length: totalRounds}, (_, i) => i+1);
 
   // Порядок игроков CT сверху вниз:
-  // 1: playerlongname9 (top)
-  // 2: playerlongname7
-  // 3: playerlongname5
-  // 4: playerlongname3
-  // 5: playerlongname (lowest)
-  // Аналогично для T:
-  // 1: playerlongname10 (top)
-  // 2: playerlongname8
-  // 3: playerlongname6
-  // 4: playerlongname4
-  // 5: playerlongname2 (lowest)
-
-  // Маппинг строк игроков к переменным:
-  // CT
-  const ctPlayersOrder = [ // индекс:0=top player, ... 
+  const ctPlayersOrder = [
     {nameClass:".playerlongname9", killsClass:"_0", deathsClass:"_011", adrClass:"_021"},
     {nameClass:".playerlongname7", killsClass:"_03", deathsClass:"_013", adrClass:"_023"},
     {nameClass:".playerlongname5", killsClass:"_05", deathsClass:"_015", adrClass:"_025"},
@@ -78,7 +64,7 @@ export default function Page() {
     {nameClass:".playerlongname",  killsClass:"_09", deathsClass:"_019", adrClass:"_029"}
   ];
 
-  // T
+  // Порядок игроков T сверху вниз:
   const tPlayersOrder = [
     {nameClass:".playerlongname10", killsClass:"_02", deathsClass:"_012", adrClass:"_022"},
     {nameClass:".playerlongname8",  killsClass:"_04", deathsClass:"_014", adrClass:"_024"},
@@ -87,12 +73,11 @@ export default function Page() {
     {nameClass:".playerlongname2",  killsClass:"_010", deathsClass:"_020", adrClass:"_030"}
   ];
 
-  // Функция для определения фона раунда
   function getRoundBackground(result) {
-    if (!result) return '#262626'; // не сыгран
+    if (!result) return '#262626';
     const normalizedResult = result.toLowerCase();
-    if (normalizedResult.startsWith('ct_win')) return '#847CA1'; // ct-win
-    if (normalizedResult.startsWith('t_win')) return '#8C8259';  // t-win
+    if (normalizedResult.startsWith('ct_win')) return '#847CA1';
+    if (normalizedResult.startsWith('t_win')) return '#8C8259';
     return '#262626';
   }
 
@@ -105,39 +90,38 @@ export default function Page() {
     else if (norm.includes('defuse')) iconPath='/icons/defuse.png';
     else if (norm.includes('time')) iconPath='/icons/clock.png';
 
-    return <Image src={iconPath} alt={result} width={20} height={20} style={{objectFit:'contain'}}/>;
+    return <Image src={iconPath} alt="" width={20} height={20} style={{objectFit:'contain'}}/>;
   }
 
-  // Функция отрисовки элемента для игрока (имя, статы)
-  function renderPlayerData(player, steamid, killsEl, deathsEl, adrEl) {
-    const { kills, deaths } = player.match_stats;
-    const adr = 0;
-    const lowercaseSteamId = steamid.toLowerCase();
-    return {
-      name: player.name,
-      kills: kills,
-      deaths: deaths,
-      adr: adr,
-      imgSrc: `/players/${lowercaseSteamId}.png`
-    };
+  function renderPlayerData(player) {
+    const { name, match_stats } = player;
+    const { kills, deaths } = match_stats;
+    const adr = 0; 
+    return { name, kills, deaths, adr };
   }
+
+  const colHeaderStyle = {
+    fontSize:'20px',
+    fontWeight:'bold',
+    textTransform:'uppercase',
+    color:'#fff'
+  };
 
   return (
     <div style={{width:'100%',height:'100vh',display:'flex',justifyContent:'center',alignItems:'center',background:'none'}}>
-      <div className="compare-mvp" style={{
-        background: 'url(compare-mvp.png) center no-repeat',
-        backgroundSize:'cover',
-        position:'relative',
-        width:'1920px',
-        height:'1080px',
-        overflow:'hidden',
-        fontFamily:'Blender Pro, sans-serif',
-        color:'#fff'
-      }}>
-        
-        {/* Вся ваша верстка ниже. Мы заменим текстовые элементы через React, добавим 'id' к элементам и будем через React создать элементы */}
-        
-        {/* Базовые элементы, оставим как есть */}
+      <div 
+        className="compare-mvp" 
+        style={{
+          background: 'url(compare-mvp.png) center no-repeat',
+          backgroundSize:'cover',
+          position:'relative',
+          width:'1920px',
+          height:'1080px',
+          overflow:'hidden',
+          fontFamily:'Blender Pro, sans-serif',
+          color:'#fff'
+        }}
+      >
         <div className="rectangle-53"></div>
         <div className="rectangle-55" style={{border:'1px solid #40327C'}}></div>
         <div className="rectangle-50"></div>
@@ -181,31 +165,24 @@ export default function Page() {
         <div className="rectangle-654"></div>
 
         {/* Логотипы команд */}
-        <img className="rectangle-49" src={`/teams/${tTeam.name}.png`} style={{objectFit:'cover'}}/>
-        <img className="rectangle-47" src={`/teams/${ctTeam.name}.png`} style={{objectFit:'cover'}}/>
+        <Image className="rectangle-49" src={`/teams/${tTeam.name}.png`} alt="" width={89} height={89} style={{position:'absolute',left:'1536px',top:'181px',objectFit:'cover'}}/>
+        <Image className="rectangle-47" src={`/teams/${ctTeam.name}.png`} alt="" width={88} height={88} style={{position:'absolute',left:'242px',top:'186px',objectFit:'cover'}}/>
 
-        {/* Player photos внизу можно оставить как декор либо заменить на реальные фото карт (при необходимости).
-           Предположим они - карты, оставим как есть или можно убрать.
-           Сейчас для простоты оставим как статические картинки.
-        */}
-        <img className="player-photo" src="https://via.placeholder.com/127x81" />
-        <img className="player-photo2" src="https://via.placeholder.com/127x81" />
-        <img className="player-photo3" src="https://via.placeholder.com/127x81" />
-        <img className="player-photo4" src="https://via.placeholder.com/127x81" />
-        <img className="player-photo5" src="https://via.placeholder.com/127x81" />
-        <img className="player-photo6" src="https://via.placeholder.com/127x81" />
-        <img className="player-photo7" src="https://via.placeholder.com/127x81" />
-        <img className="player-photo8" src="https://via.placeholder.com/127x81" />
-        <img className="player-photo9" src="https://via.placeholder.com/127x81" />
-        <img className="player-photo10" src="https://via.placeholder.com/127x81" />
+        {/* player-photo* просто заглушки */}
+        <Image className="player-photo" alt="" src="https://via.placeholder.com/127x81" width={127} height={81} style={{position:'absolute',left:'252px',top:'744px',boxShadow:'0px 4px 4px rgba(0,0,0,0.25)',objectFit:'cover'}}/>
+        <Image className="player-photo2" alt="" src="https://via.placeholder.com/127x81" width={127} height={81} style={{position:'absolute',left:'969px',top:'744px',boxShadow:'0px 4px 4px rgba(0,0,0,0.25)',objectFit:'cover'}}/>
+        <Image className="player-photo3" alt="" src="https://via.placeholder.com/127x81" width={127} height={81} style={{position:'absolute',left:'252px',top:'656px',boxShadow:'0px 4px 4px rgba(0,0,0,0.25)',objectFit:'cover'}}/>
+        <Image className="player-photo4" alt="" src="https://via.placeholder.com/127x81" width={127} height={81} style={{position:'absolute',left:'969px',top:'656px',boxShadow:'0px 4px 4px rgba(0,0,0,0.25)',objectFit:'cover'}}/>
+        <Image className="player-photo5" alt="" src="https://via.placeholder.com/127x81" width={127} height={81} style={{position:'absolute',left:'252px',top:'566px',boxShadow:'0px 4px 4px rgba(0,0,0,0.25)',objectFit:'cover'}}/>
+        <Image className="player-photo6" alt="" src="https://via.placeholder.com/127x81" width={127} height={81} style={{position:'absolute',left:'969px',top:'566px',boxShadow:'0px 4px 4px rgba(0,0,0,0.25)',objectFit:'cover'}}/>
+        <Image className="player-photo7" alt="" src="https://via.placeholder.com/127x81" width={127} height={81} style={{position:'absolute',left:'252px',top:'476px',boxShadow:'0px 4px 4px rgba(0,0,0,0.25)',objectFit:'cover'}}/>
+        <Image className="player-photo8" alt="" src="https://via.placeholder.com/127x81" width={127} height={81} style={{position:'absolute',left:'969px',top:'476px',boxShadow:'0px 4px 4px rgba(0,0,0,0.25)',objectFit:'cover'}}/>
+        <Image className="player-photo9" alt="" src="https://via.placeholder.com/127x81" width={127} height={81} style={{position:'absolute',left:'252px',top:'386px',boxShadow:'0px 4px 4px rgba(0,0,0,0.25)',objectFit:'cover'}}/>
+        <Image className="player-photo10" alt="" src="https://via.placeholder.com/127x81" width={127} height={81} style={{position:'absolute',left:'969px',top:'386px',boxShadow:'0px 4px 4px rgba(0,0,0,0.25)',objectFit:'cover'}}/>
 
-        {/* Подставляем реальные имена команд */}
-        <div className="team-name">{ctTeam.name.toUpperCase()}</div>
-        <div className="team-name2">{tTeam.name.toUpperCase()}</div>
+        <div className="team-name" style={{textTransform:'uppercase'}}>{ctTeam.name.toUpperCase()}</div>
+        <div className="team-name2" style={{textTransform:'uppercase'}}>{tTeam.name.toUpperCase()}</div>
 
-        {/* Заголовки PLAYER, PLAYER2, K, D, ADR уже есть,
-            заменим их текстContent с помощью React ниже если нужно. Но сейчас просто оставим как статично 
-        */}
         <div className="player">PLAYER</div>
         <div className="player2">PLAYER</div>
         <div className="k">K</div>
@@ -216,19 +193,28 @@ export default function Page() {
         <div className="adr2">ADR</div>
 
         {/* Счёт */}
-        <div className="_031">{ctTeam.score}</div>
-        <div className="_2">{tTeam.score}</div>
-        <div className="div">:</div>
+        <div className="_031" style={{textAlign:'center',color:'#847CA1',fontSize:'100px',fontFamily:'Blender Pro',fontWeight:'900',lineHeight:'82.56px',position:'absolute',left:'810px',top:'194px'}}>{ctTeam.score}</div>
+        <div className="_2" style={{textAlign:'center',color:'#EADAA5',fontSize:'100px',fontFamily:'Blender Pro',fontWeight:'900',lineHeight:'82.56px',position:'absolute',left:'985px',top:'196px'}}>{tTeam.score}</div>
+        <div className="div" style={{textAlign:'center',color:'#575170',fontSize:'99px',fontFamily:'Blender Pro',fontWeight:'900',lineHeight:'81.73px',position:'absolute',left:'933px',top:'190px'}}>:</div>
 
-        {/* Заменим Playerlongname и статы на реальных игроков */}
-        {/* CT Players */}
+        {/* MAP: Nuke and MATCH STATS */}
+        <div className="match-stats" style={{
+          position:'absolute', left:'539px', top:'17px', width:'803px', height:'140px',
+          textAlign:'center', color:'#fff', fontSize:'91px', fontFamily:'Blender Pro', fontWeight:'900', textTransform:'uppercase',lineHeight:'75.13px'
+        }}>MATCH STATS</div>
+
+        <div className="map-nuke" style={{
+          position:'absolute', left:'819px', top:'127px', width:'240px', height:'46px',
+          textAlign:'center', color:'#fff', fontSize:'29px', fontFamily:'Blender Pro', fontWeight:'500', lineHeight:'23.94px'
+        }}>MAP: {mapName}</div>
+
+        {/* Подставляем CT игроков */}
         {ctPlayers.map((pl,i) => {
           const mapping = ctPlayersOrder[i];
-          const { name, kills, deaths, adr, imgSrc } = renderPlayerData(pl, pl.steamid);
-          // Устанавливаем текст внутри соответствующих элементов:
+          const { name, kills, deaths, adr } = renderPlayerData(pl);
           return (
             <React.Fragment key={pl.steamid}>
-              <div className={mapping.nameClass.replace('.','')} style={{position:'absolute', color:'#fff',fontFamily:'Blender Pro',fontSize:'31px',fontWeight:'700',textTransform:'uppercase',whiteSpace:'nowrap',overflow:'hidden',width:'301px'}}>{name}</div>
+              <div className={mapping.nameClass.replace('.','')} style={{position:'absolute',color:'#fff',fontFamily:'Blender Pro',fontSize:'31px',fontWeight:'700',textTransform:'uppercase',width:'301px',whiteSpace:'nowrap',overflow:'hidden'}}>{name}</div>
               <div className={mapping.killsClass.replace('.','')} style={{position:'absolute',color:'#fff',fontFamily:'Blender Pro',fontSize:'40px',fontWeight:'700',textTransform:'uppercase'}}>{kills}</div>
               <div className={mapping.deathsClass.replace('.','')} style={{position:'absolute',color:'#fff',fontFamily:'Blender Pro',fontSize:'40px',fontWeight:'700',textTransform:'uppercase'}}>{deaths}</div>
               <div className={mapping.adrClass.replace('.','')} style={{position:'absolute',color:'#fff',fontFamily:'Blender Pro',fontSize:'40px',fontWeight:'700',textTransform:'uppercase'}}>{adr}</div>
@@ -236,13 +222,13 @@ export default function Page() {
           );
         })}
 
-        {/* T Players */}
+        {/* Подставляем T игроков */}
         {tPlayers.map((pl,i)=>{
           const mapping = tPlayersOrder[i];
-          const { name, kills, deaths, adr, imgSrc } = renderPlayerData(pl, pl.steamid);
+          const { name, kills, deaths, adr } = renderPlayerData(pl);
           return (
             <React.Fragment key={pl.steamid}>
-              <div className={mapping.nameClass.replace('.','')} style={{position:'absolute',color:'#fff',fontFamily:'Blender Pro',fontSize:'31px',fontWeight:'700',textTransform:'uppercase',whiteSpace:'nowrap',overflow:'hidden',width:'301px',textAlign:'left'}}>{name}</div>
+              <div className={mapping.nameClass.replace('.','')} style={{position:'absolute',color:'#fff',fontFamily:'Blender Pro',fontSize:'31px',fontWeight:'700',textTransform:'uppercase',width:'301px',whiteSpace:'nowrap',overflow:'hidden',textAlign:'left'}}>{name}</div>
               <div className={mapping.killsClass.replace('.','')} style={{position:'absolute',color:'#fff',fontFamily:'Blender Pro',fontSize:'40px',fontWeight:'700',textTransform:'uppercase'}}>{kills}</div>
               <div className={mapping.deathsClass.replace('.','')} style={{position:'absolute',color:'#fff',fontFamily:'Blender Pro',fontSize:'40px',fontWeight:'700',textTransform:'uppercase'}}>{deaths}</div>
               <div className={mapping.adrClass.replace('.','')} style={{position:'absolute',color:'#fff',fontFamily:'Blender Pro',fontSize:'40px',fontWeight:'700',textTransform:'uppercase'}}>{adr}</div>
@@ -250,7 +236,7 @@ export default function Page() {
           );
         })}
 
-        {/* Round History */}
+        {/* Отрисовка 24 раундов */}
         {rounds.map((roundNumber, i) => {
           const result = roundWins[roundNumber.toString()] || null;
           const baseLeft = 247;
@@ -285,16 +271,6 @@ export default function Page() {
             </div>
           );
         })}
-
-        {/* MATCH STATS and MAP: NUKE (заменяем на актуальные данные) */}
-        <div className="match-stats" style={{
-          position:'absolute', left:'539px', top:'17px', width:'803px', height:'140px',
-          textAlign:'center', color:'#fff', fontSize:'91px', fontFamily:'Blender Pro', fontWeight:'900', textTransform:'uppercase',lineHeight:'75.13px'
-        }}>MATCH STATS</div>
-        <div className="map-nuke" style={{
-          position:'absolute', left:'819px', top:'127px', width:'240px', height:'46px',
-          textAlign:'center', color:'#fff', fontSize:'29px', fontFamily:'Blender Pro', fontWeight:'500', lineHeight:'23.94px'
-        }}>MAP: {mapName}</div>
 
       </div>
     </div>
