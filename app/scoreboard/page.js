@@ -70,26 +70,24 @@ export default function ScoreboardPage() {
         </div>
       </div>
 
-      {/* Заголовки для колонок */}
-      <div className="table-header-row">
-        <div className="team-table-header ct-side">
-          <span className="col-header">Kills</span>
-          <span className="col-header">Deaths</span>
-          <span className="col-header">KD</span>
-        </div>
-        <div className="team-table-header t-side">
-          <span className="col-header">Kills</span>
-          <span className="col-header">Deaths</span>
-          <span className="col-header">KD</span>
-        </div>
-      </div>
-
-      {/* Игроки */}
-      <div className="players-table-row">
-        <div className="players-column ct-side">
+      {/* Статистика команд (заголовки и игроки) */}
+      <div className="teams-stats-container">
+        <div className="team-stat-container ct-side">
+          <div className="team-table-header">
+            <span className="col-header-player">PLAYER</span>
+            <span className="col-header">KILLS</span>
+            <span className="col-header">DEATHS</span>
+            <span className="col-header">KD</span>
+          </div>
           {ctPlayers.map(player => renderPlayerRow(player))}
         </div>
-        <div className="players-column t-side">
+        <div className="team-stat-container t-side">
+          <div className="team-table-header">
+            <span className="col-header-player">PLAYER</span>
+            <span className="col-header">KILLS</span>
+            <span className="col-header">DEATHS</span>
+            <span className="col-header">KD</span>
+          </div>
           {tPlayers.map(player => renderPlayerRow(player))}
         </div>
       </div>
@@ -104,7 +102,7 @@ export default function ScoreboardPage() {
         body {
           margin: 0;
           padding: 0;
-          background: transparent;
+          background: #000; /* Фон страницы темный */
           font-family: Arial, sans-serif;
           color: #fff;
         }
@@ -173,47 +171,51 @@ export default function ScoreboardPage() {
           color: #fff;
         }
 
-        .table-header-row {
-          display: flex;
-          justify-content: space-between;
+        .teams-stats-container {
           width: 100%;
-          background: transparent;
+          display: flex;
+          gap: 20px;
+          justify-content: space-between;
+        }
+
+        .team-stat-container {
+          background: #2a2440;
+          border-radius: 8px;
+          padding: 10px;
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
         }
 
         .team-table-header {
           display: grid;
-          grid-template-columns: repeat(3, 1fr);
+          grid-template-columns: [player] 1fr [kills] 60px [deaths] 60px [kd] 60px;
           text-align: center;
           gap: 10px;
-          width: 45%;
-          padding: 10px 0;
+          align-items: center;
+          background: #201c2c;
+          border-radius: 4px;
+          padding: 10px;
         }
 
-        .col-header {
+        .col-header, .col-header-player {
           font-size: 14px;
           font-weight: bold;
           text-transform: uppercase;
           color: #ccc;
         }
 
-        .players-table-row {
-          display: flex;
-          justify-content: space-between;
-          width: 100%;
-          gap: 20px;
-        }
-
-        .players-column {
-          width: 45%;
-          display: flex;
-          flex-direction: column;
-          gap: 10px;
+        .col-header-player {
+          text-align: left;
+          padding-left: 10px;
         }
 
         .player-row {
-          display: flex;
+          display: grid;
+          grid-template-columns: [player] 1fr [kills] 60px [deaths] 60px [kd] 60px;
           align-items: center;
-          background: #2a2440;
+          background: #3a3357;
           padding: 10px;
           border-radius: 8px;
           gap: 10px;
@@ -226,27 +228,27 @@ export default function ScoreboardPage() {
           object-fit: contain;
         }
 
+        .player-name-wrapper {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          padding-left: 10px;
+          overflow: hidden;
+        }
+
         .player-name {
           font-weight: bold;
           font-size: 14px;
-          flex: 2;
           text-transform: uppercase;
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
         }
 
-        .player-stats {
-          display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          gap: 10px;
-          text-align: center;
-          flex: 3;
-        }
-
         .stat-value {
           font-weight: bold;
           font-size: 14px;
+          text-align: center;
         }
 
         .round-history-container {
@@ -255,6 +257,7 @@ export default function ScoreboardPage() {
           border-radius: 8px;
           padding: 10px;
           margin-top: 10px;
+          box-sizing: border-box;
         }
 
         .round-history-title {
@@ -264,33 +267,39 @@ export default function ScoreboardPage() {
           color: #fff;
           margin-bottom: 10px;
           text-align: left;
+          padding-left: 10px;
         }
 
-        .round-history-line {
+        .halves-container {
+          position: relative;
           display: flex;
           align-items: center;
-          width: 100%;
+          justify-content: center;
+        }
+
+        .first-half-rounds, .second-half-rounds {
+          display: flex;
+          gap: 5px;
           flex-wrap: nowrap;
+          align-items: center;
+          flex:1;
+        }
+
+        .first-half-rounds {
+          justify-content: flex-end;
+        }
+
+        .second-half-rounds {
+          justify-content: flex-start;
         }
 
         .rounds-divider {
+          position: absolute;
+          left: 50%;
+          transform: translateX(-50%);
           width: 1px;
           background: #ccc;
           height: 20px;
-          margin: 0 5px;
-        }
-
-        .rounds-line {
-          display: flex;
-          flex-wrap: nowrap;
-          align-items: center;
-          gap: 5px;
-        }
-
-        .round-icon {
-          width: 16px;
-          height: 16px;
-          object-fit: contain;
         }
 
         .round-wrapper {
@@ -301,11 +310,16 @@ export default function ScoreboardPage() {
           gap: 2px;
         }
 
+        .round-icon {
+          width: 16px;
+          height: 16px;
+          object-fit: contain;
+        }
+
         .round-number {
           font-size: 10px;
           color: #ccc;
         }
-
       `}</style>
     </div>
   );
@@ -318,19 +332,19 @@ function renderPlayerRow(player) {
 
   return (
     <div className="player-row" key={steamid}>
-      <Image 
-        className="player-img"
-        src={`/players/${steamid}.jpg`} 
-        alt={name} 
-        width={40} 
-        height={40} 
-      />
-      <div className="player-name">{name}</div>
-      <div className="player-stats">
-        <div className="stat-value">{kills}</div>
-        <div className="stat-value">{deaths}</div>
-        <div className="stat-value">{kd}</div>
+      <div className="player-name-wrapper">
+        <Image 
+          className="player-img"
+          src={`/players/${steamid}.jpg`} 
+          alt={name} 
+          width={40} 
+          height={40} 
+        />
+        <div className="player-name">{name}</div>
       </div>
+      <div className="stat-value">{kills}</div>
+      <div className="stat-value">{deaths}</div>
+      <div className="stat-value">{kd}</div>
     </div>
   );
 }
@@ -346,10 +360,12 @@ function renderRoundHistory(roundWins) {
   const secondHalfRounds = roundNumbers.filter(n => n > 12);
 
   return (
-    <div className="round-history-line">
-      <div className="rounds-line">
+    <div className="halves-container">
+      <div className="first-half-rounds">
         {firstHalfRounds.map(roundNumber => createRoundIcon(roundNumber, roundWins[roundNumber.toString()]))}
-        {firstHalfRounds.length > 0 && secondHalfRounds.length > 0 && <div className="rounds-divider"></div>}
+      </div>
+      <div className="rounds-divider"></div>
+      <div className="second-half-rounds">
         {secondHalfRounds.map(roundNumber => createRoundIcon(roundNumber, roundWins[roundNumber.toString()]))}
       </div>
     </div>
