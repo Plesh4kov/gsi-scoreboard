@@ -110,23 +110,23 @@ export default function ScoreboardPage() {
         body {
           margin: 0;
           padding: 0;
-          background: none; /* без задней подложки */
+          background: none;
           font-family: 'BLENDERPRO-BOLD', sans-serif;
           color: #fff;
         }
 
         .scoreboard-container {
-          width: 900px; /* немного меньше ширины, чтобы уместилось на экран */
-          margin: 20px auto;
+          width: 900px;
+          margin: 10px auto;
           display: flex;
           flex-direction: column;
           align-items: center;
-          gap: 10px;
+          gap: 5px;
         }
 
         .main-title {
           font-family: 'BLENDERPRO-HEAVY', sans-serif;
-          font-size: 64px; /* чуть меньше, чтобы влезло */
+          font-size: 64px;
           font-weight: bold;
           text-transform: uppercase;
           color: #fff;
@@ -135,7 +135,7 @@ export default function ScoreboardPage() {
         }
 
         .map-name {
-          font-size: 20px;
+          font-size: 18px;
           font-weight: bold;
           color: #fff;
           text-transform: uppercase;
@@ -148,7 +148,7 @@ export default function ScoreboardPage() {
           justify-content: space-between;
           align-items: center;
           width: 100%;
-          background: rgba(46,37,71,0.9); /* #2e2547 с ~10% прозрачности (0.9 alpha) */
+          background: rgba(46,37,71,0.1);
           border: 1px solid #423769;
           border-radius: 0; 
           padding: 5px 10px;
@@ -174,7 +174,7 @@ export default function ScoreboardPage() {
         }
 
         .score-middle {
-          font-size: 40px; 
+          font-size: 36px; 
           font-weight: bold;
           color: #fff;
         }
@@ -187,13 +187,13 @@ export default function ScoreboardPage() {
         }
 
         .ct-side.team-stat-container {
-          background: rgba(110,88,171,0.9); 
+          background: rgba(110,88,171,0.1); 
           border: 1px solid #423769;
           border-radius: 0;
         }
 
         .t-side.team-stat-container {
-          background: rgba(153,137,89,0.9);
+          background: rgba(153,137,89,0.1);
           border: 1px solid #423769;
           border-radius: 0;
         }
@@ -212,15 +212,15 @@ export default function ScoreboardPage() {
           column-gap:20px;
           text-align: center;
           align-items: center;
-          background: rgba(0,0,0,0.9); /* более плотный фон */
-          border: none; /* убрать обводку */
+          background: rgba(0,0,0,0.1);
+          border: none;
           border-radius: 0;
           padding: 5px;
         }
 
         .col-header-player {
           text-align: left;
-          font-size: 25px; /* было 30px, уменьшим на 15% -> 30*0.85=25.5 ~25px */
+          font-size: 22px;
           font-weight: bold;
           text-transform: uppercase;
           color: #fff;
@@ -228,7 +228,7 @@ export default function ScoreboardPage() {
         }
 
         .col-header {
-          font-size: 25px; /* тоже уменьшили на 15% */
+          font-size: 22px; 
           font-weight: bold;
           text-transform: uppercase;
           color: #fff;
@@ -239,23 +239,28 @@ export default function ScoreboardPage() {
           grid-template-columns: 1fr 30px 30px 40px;
           column-gap:20px;
           align-items: center;
-          background: rgba(0,0,0,0.9); /* более темный и плотный фон */
+          background: rgba(0,0,0,0.1);
           border-radius: 0;
-          padding: 5px;
-          /* без обводки */
+          padding: 10px; /* padding для аккуратности */
+          box-sizing: border-box;
         }
 
         .player-img {
-          width: 60px; /* было 70px, уменьшаем чтобы влезало лучше */
+          width: 60px; 
           height: 60px;
           object-fit: contain; 
         }
 
-        /* Шрифт статистики на 15% меньше от 27px => ~23px */
-        /* Имя игрока 27px -> 23px */
+        .player-name-wrapper {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          overflow: hidden;
+        }
+
         .player-name {
           font-weight: bold;
-          font-size: 23px; 
+          font-size: 20px; /* уменьшили еще на 15% от 23px => ~20px */
           text-transform: uppercase;
           white-space: nowrap;
           overflow: hidden;
@@ -263,17 +268,16 @@ export default function ScoreboardPage() {
           color: #fff;
         }
 
-        /* Статистика тоже 23px */
         .stat-value {
           font-weight: bold;
-          font-size: 23px; 
+          font-size: 20px; 
           text-align: center;
           color: #fff;
         }
 
         .round-history-container {
           width: 100%;
-          background: rgba(32,28,44,0.9); 
+          background: rgba(32,28,44,0.1);
           border: 1px solid #423769;
           border-radius: 0;
           padding: 5px;
@@ -304,20 +308,22 @@ export default function ScoreboardPage() {
           flex-direction: column;
           align-items: center;
           justify-content: center;
-          background: rgba(58,51,87,0.9);
-          border: none; 
+          background: rgba(0,0,0,0.1);
+          border: none;
+          padding:5px; /* padding для иконок и числа */
+          box-sizing:border-box;
         }
 
         .round-wrapper.ct-win {
-          background: rgba(110,88,171,0.9); 
+          background: rgba(110,88,171,0.1); 
         }
 
         .round-wrapper.t-win {
-          background: rgba(153,137,89,0.9);
+          background: rgba(153,137,89,0.1);
         }
 
         .round-wrapper.empty {
-          background: rgba(47,43,60,0.9); 
+          background: rgba(47,43,60,0.1); 
         }
 
         .round-icon {
@@ -329,7 +335,7 @@ export default function ScoreboardPage() {
         .round-number {
           font-size: 14px; 
           color: #fff;
-          margin-top: 1px;
+          margin-top: 2px; /* немного отступа */
         }
       `}</style>
     </div>
@@ -344,7 +350,7 @@ function renderPlayerRow(player) {
 
   return (
     <div className="player-row" key={steamid}>
-      <div className="player-name-wrapper" style={{display:'flex',alignItems:'center',gap:'10px'}}>
+      <div className="player-name-wrapper">
         <Image 
           className="player-img"
           src={`/players/${lowercaseSteamId}.png`}
