@@ -1,5 +1,3 @@
-"use client";
-
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 
@@ -7,7 +5,7 @@ export default function ScoreboardPage() {
   const [matchData, setMatchData] = useState(null);
 
   useEffect(() => {
-    const fetchData = async () => {
+    async function fetchData() {
       const response = await fetch('/api/gsi');
       if (response.ok) {
         const data = await response.json();
@@ -15,7 +13,7 @@ export default function ScoreboardPage() {
           setMatchData(data[0]);
         }
       }
-    };
+    }
     fetchData();
     const interval = setInterval(fetchData, 2000);
     return () => clearInterval(interval);
@@ -32,7 +30,7 @@ export default function ScoreboardPage() {
         alignItems:'center',
         justifyContent:'center'
       }}>
-        <h2 style={{fontSize:'40px', textTransform:'uppercase', letterSpacing:'2px'}}>Loading...</h2>
+        <h2 style={{fontSize: '40px', textTransform:'uppercase', letterSpacing:'2px'}}>Loading...</h2>
       </div>
     );
   }
@@ -59,37 +57,29 @@ export default function ScoreboardPage() {
       <div className="main-title">MATCH RESULT</div>
       <div className="map-name">MAP: {mapName}</div>
 
-      <div className="teams-line">
-        <div className="team-info-line ct-side">
-          <Image alt="CT Team" src={`/teams/${ctTeam.name}.png`} width={50} height={50} className="team-logo"/>
-          <span className="team-name">{ctTeam.name.toUpperCase()}</span>
+      {/* Верхний и нижний прямоугольники, боковые */}
+      <div className="top-bar"></div>
+      <div className="bottom-bar"></div>
+
+      {/* Центральные большие прямоугольники для CT и T */}
+      <div className="ct-panel">
+        <div className="team-table-header">
+          <span className="col-header-player">PLAYER</span>
+          <span className="col-header">K</span>
+          <span className="col-header">D</span>
+          <span className="col-header">KD</span>
         </div>
-        <div className="score-middle">{ctTeam.score} - {tTeam.score}</div>
-        <div className="team-info-line t-side">
-          <span className="team-name">{tTeam.name.toUpperCase()}</span>
-          <Image alt="T Team" src={`/teams/${tTeam.name}.png`} width={50} height={50} className="team-logo"/>
-        </div>
+        {ctPlayers.map(player => renderPlayerRow(player))}
       </div>
 
-      <div className="teams-stats-container">
-        <div className="team-stat-container ct-side">
-          <div className="team-table-header">
-            <span className="col-header-player">PLAYER</span>
-            <span className="col-header">K</span>
-            <span className="col-header">D</span>
-            <span className="col-header">KD</span>
-          </div>
-          {ctPlayers.map(player => renderPlayerRow(player))}
+      <div className="t-panel">
+        <div className="team-table-header">
+          <span className="col-header-player">PLAYER</span>
+          <span className="col-header">K</span>
+          <span className="col-header">D</span>
+          <span className="col-header">KD</span>
         </div>
-        <div className="team-stat-container t-side">
-          <div className="team-table-header">
-            <span className="col-header-player">PLAYER</span>
-            <span className="col-header">K</span>
-            <span className="col-header">D</span>
-            <span className="col-header">KD</span>
-          </div>
-          {tPlayers.map(player => renderPlayerRow(player))}
-        </div>
+        {tPlayers.map(player => renderPlayerRow(player))}
       </div>
 
       <div className="round-history-container">
@@ -104,15 +94,18 @@ export default function ScoreboardPage() {
 
       <style jsx>{`
         .scoreboard-root {
-          width: 900px;
-          margin: 10px auto;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          gap: 5px;
+          position: relative;
+          width: 1920px;
+          height: 1080px;
+          margin:0 auto;
+          background: none;
           font-family: 'BLENDERPRO-BOLD', sans-serif;
           color: #fff;
-          background: none;
+          display:flex;
+          flex-direction:column;
+          align-items:center;
+          justify-content:flex-start;
+          overflow:hidden;
         }
 
         .main-title {
@@ -120,9 +113,8 @@ export default function ScoreboardPage() {
           font-size: 50px;
           font-weight: bold;
           text-transform: uppercase;
-          color: #fff;
           letter-spacing: 2px;
-          margin: 0;
+          margin: 10px 0 5px 0;
         }
 
         .map-name {
@@ -133,82 +125,66 @@ export default function ScoreboardPage() {
           margin: 0 0 10px 0;
         }
 
-        .teams-line {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          width: 100%;
-          background: rgba(46,37,71,0.9);
-          border: 1px solid #423769;
-          border-radius: 0;
-          padding: 5px 10px;
-          box-sizing:border-box;
+        /* Верхние/нижние бары, как в SwiftUI примере */
+        .top-bar {
+          position:absolute;
+          top:0;
+          left:0;
+          width:1419px;
+          height:113px;
+          background: rgba(0.13,0.11,0.23,0.9);
+          transform: translateX(-19.5px) translateY(-310.5px);
         }
 
-        .team-info-line {
-          display: flex;
-          align-items: center;
-          gap: 5px;
+        .bottom-bar {
+          position:absolute;
+          bottom:0;
+          left:0;
+          width:1419px;
+          height:133px;
+          background: rgba(0.13,0.11,0.23,0.9);
+          border: 0.5px solid rgba(0.25,0.20,0.49,1);
+          transform: translateX(-19.5px) translateY(410.5px);
         }
 
-        .team-logo {
-          width: 50px;
-          height: 50px;
-          object-fit: contain;
-        }
-
-        .team-name {
-          font-size: 16px;
-          font-weight: bold;
-          text-transform: uppercase;
-          color: #fff;
-        }
-
-        .score-middle {
-          font-size: 30px;
-          font-weight: bold;
-          color: #fff;
-        }
-
-        .teams-stats-container {
-          width: 100%;
-          display: flex;
-          gap: 10px;
-          justify-content: space-between;
-        }
-
-        .ct-side.team-stat-container {
-          background: rgba(110,88,171,0.9);
-          border: 1px solid #423769;
-          border-radius: 0;
-          padding: 5px;
-          box-sizing:border-box;
-          flex:1;
+        /* Панели для команд, градиенты и обводки как в примере */
+        .ct-panel {
+          position:absolute;
+          left:50%;
+          top:50%;
+          transform: translate(-378px,38px);
+          width:702px;
+          height:542px;
           display:flex;
           flex-direction:column;
-          gap:5px;
+          background: linear-gradient(to bottom, rgba(0.06,0.06,0.06,0) 0%, rgba(0.22,0.15,0.45,1) 100%);
+          border:0.5px solid rgba(0.25,0.20,0.49,1);
+          box-sizing:border-box;
+          padding:10px;
         }
 
-        .t-side.team-stat-container {
-          background: rgba(153,137,89,0.9);
-          border: 1px solid #423769;
-          border-radius: 0;
-          padding: 5px;
-          box-sizing:border-box;
-          flex:1;
+        .t-panel {
+          position:absolute;
+          left:50%;
+          top:50%;
+          transform: translate(339px,38px);
+          width:702px;
+          height:542px;
           display:flex;
           flex-direction:column;
-          gap:5px;
+          background: linear-gradient(to bottom, rgba(0.06,0.06,0.06,0) 0%, rgba(0.45,0.38,0.15,1) 100%);
+          border:0.5px solid rgba(0.92,0.85,0.65,1);
+          box-sizing:border-box;
+          padding:10px;
         }
 
         .team-table-header {
           display: grid;
           grid-template-columns: 1fr 30px 30px 40px;
           column-gap:20px;
-          align-items: center;
+          align-items:center;
           background: rgba(0,0,0,0.2);
           border:none;
-          border-radius:0;
           padding:5px;
           box-sizing:border-box;
         }
@@ -235,9 +211,9 @@ export default function ScoreboardPage() {
           column-gap:20px;
           align-items:center;
           background:rgba(0,0,0,0.2);
-          border-radius:0;
           padding:10px;
           box-sizing:border-box;
+          margin-top:5px;
         }
 
         .player-img {
@@ -257,10 +233,10 @@ export default function ScoreboardPage() {
           font-weight:bold;
           font-size:18px;
           text-transform:uppercase;
+          color:#fff;
           white-space:nowrap;
           overflow:hidden;
           text-overflow:ellipsis;
-          color:#fff;
         }
 
         .stat-value {
@@ -271,15 +247,20 @@ export default function ScoreboardPage() {
         }
 
         .round-history-container {
-          width:100%;
-          background: rgba(32,28,44,0.9);
-          border: 1px solid #423769;
-          border-radius:0;
-          padding:5px;
-          box-sizing:border-box;
+          position:absolute;
+          left:50%;
+          bottom:0;
+          transform:translateX(-19.5px) translateY(410.5px); 
+          width:1419px;
+          height:133px;
+          background:rgba(0.13,0.11,0.23,0.9);
+          border:0.5px solid rgba(0.25,0.20,0.49,1);
           display:flex;
           flex-direction:column;
           align-items:center;
+          justify-content:flex-start;
+          padding:5px;
+          box-sizing:border-box;
         }
 
         .round-history-title {
@@ -301,22 +282,17 @@ export default function ScoreboardPage() {
         .round-wrapper {
           width:100%;
           height:96px;
-          background:rgba(0,0,0,0.2);
+          background:rgba(0.15,0.15,0.15,0.56);
           display:flex;
           flex-direction:column;
           align-items:center;
           justify-content:center;
-          border:none;
-          padding:5px;
           box-sizing:border-box;
+          padding:5px;
         }
 
         .round-wrapper.ct-win {
           background:rgba(0.52,0.49,0.63,1);
-        }
-
-        .round-wrapper.t-win {
-          /* цвет для T side win, если нужен другой */
         }
 
         .round-wrapper.empty {
@@ -381,7 +357,7 @@ function createRoundCell(roundNumber, result) {
   if (normalizedResult.startsWith('ct_win')) {
     roundClass = 'ct-win';
   } else if (normalizedResult.startsWith('t_win')) {
-    roundClass = 't-win';
+    // если нужно другой цвет или иконку, задать тут
   }
 
   switch (normalizedResult) {
@@ -407,6 +383,20 @@ function createRoundCell(roundNumber, result) {
     <div className={`round-wrapper ${roundClass}`} key={roundNumber}>
       <Image src={iconPath} alt={result} className="round-icon" width={20} height={20}/>
       <span className="round-number">{roundNumber}</span>
+    </div>
+  );
+}
+
+function renderRoundHistory(roundWins) {
+  const totalRounds = 24;
+  const rounds = Array.from({length: totalRounds}, (_, i) => i+1);
+
+  return (
+    <div className="rounds-grid">
+      {rounds.map(roundNumber => {
+        const result = roundWins[roundNumber.toString()] || null;
+        return createRoundCell(roundNumber, result);
+      })}
     </div>
   );
 }
