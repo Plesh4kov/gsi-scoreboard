@@ -126,7 +126,7 @@ export default function ScoreboardPage() {
 
         .main-title {
           font-family: 'BLENDERPRO-HEAVY', sans-serif;
-          font-size: 64px;
+          font-size: 50px;
           font-weight: bold;
           text-transform: uppercase;
           color: #fff;
@@ -135,7 +135,7 @@ export default function ScoreboardPage() {
         }
 
         .map-name {
-          font-size: 18px;
+          font-size: 16px;
           font-weight: bold;
           color: #fff;
           text-transform: uppercase;
@@ -148,7 +148,7 @@ export default function ScoreboardPage() {
           justify-content: space-between;
           align-items: center;
           width: 100%;
-          background: rgba(46,37,71,0.1);
+          background: rgba(46,37,71,0.9); 
           border: 1px solid #423769;
           border-radius: 0; 
           padding: 5px 10px;
@@ -167,14 +167,14 @@ export default function ScoreboardPage() {
         }
 
         .team-name {
-          font-size: 20px;
+          font-size: 16px;
           font-weight: bold;
           text-transform: uppercase;
           color: #fff;
         }
 
         .score-middle {
-          font-size: 36px; 
+          font-size: 30px; 
           font-weight: bold;
           color: #fff;
         }
@@ -187,13 +187,13 @@ export default function ScoreboardPage() {
         }
 
         .ct-side.team-stat-container {
-          background: rgba(110,88,171,0.1); 
+          background: rgba(110,88,171,0.9); 
           border: 1px solid #423769;
           border-radius: 0;
         }
 
         .t-side.team-stat-container {
-          background: rgba(153,137,89,0.1);
+          background: rgba(153,137,89,0.9);
           border: 1px solid #423769;
           border-radius: 0;
         }
@@ -212,15 +212,15 @@ export default function ScoreboardPage() {
           column-gap:20px;
           text-align: center;
           align-items: center;
-          background: rgba(0,0,0,0.1);
-          border: none;
+          background: rgba(0,0,0,0.2);
+          border: none; 
           border-radius: 0;
           padding: 5px;
         }
 
         .col-header-player {
           text-align: left;
-          font-size: 22px;
+          font-size: 20px;
           font-weight: bold;
           text-transform: uppercase;
           color: #fff;
@@ -228,7 +228,7 @@ export default function ScoreboardPage() {
         }
 
         .col-header {
-          font-size: 22px; 
+          font-size: 20px; 
           font-weight: bold;
           text-transform: uppercase;
           color: #fff;
@@ -239,9 +239,9 @@ export default function ScoreboardPage() {
           grid-template-columns: 1fr 30px 30px 40px;
           column-gap:20px;
           align-items: center;
-          background: rgba(0,0,0,0.1);
+          background: rgba(0,0,0,0.2);
           border-radius: 0;
-          padding: 10px; /* padding для аккуратности */
+          padding: 10px;
           box-sizing: border-box;
         }
 
@@ -260,7 +260,7 @@ export default function ScoreboardPage() {
 
         .player-name {
           font-weight: bold;
-          font-size: 20px; /* уменьшили еще на 15% от 23px => ~20px */
+          font-size: 18px; 
           text-transform: uppercase;
           white-space: nowrap;
           overflow: hidden;
@@ -270,14 +270,14 @@ export default function ScoreboardPage() {
 
         .stat-value {
           font-weight: bold;
-          font-size: 20px; 
+          font-size: 18px;
           text-align: center;
           color: #fff;
         }
 
         .round-history-container {
           width: 100%;
-          background: rgba(32,28,44,0.1);
+          background: rgba(32,28,44,0.9);
           border: 1px solid #423769;
           border-radius: 0;
           padding: 5px;
@@ -303,27 +303,27 @@ export default function ScoreboardPage() {
 
         .round-wrapper {
           width: 100%; 
-          height: 40px;
+          height: 50px;
           display: flex;
           flex-direction: column;
           align-items: center;
           justify-content: center;
-          background: rgba(0,0,0,0.1);
-          border: none;
-          padding:5px; /* padding для иконок и числа */
+          background: rgba(0,0,0,0.2);
+          border: none; 
+          padding:5px;
           box-sizing:border-box;
         }
 
         .round-wrapper.ct-win {
-          background: rgba(110,88,171,0.1); 
+          background: rgba(110,88,171,0.9);
         }
 
         .round-wrapper.t-win {
-          background: rgba(153,137,89,0.1);
+          background: rgba(153,137,89,0.9);
         }
 
         .round-wrapper.empty {
-          background: rgba(47,43,60,0.1); 
+          background: rgba(47,43,60,0.9); 
         }
 
         .round-icon {
@@ -335,7 +335,7 @@ export default function ScoreboardPage() {
         .round-number {
           font-size: 14px; 
           color: #fff;
-          margin-top: 2px; /* немного отступа */
+          margin-top: 2px;
         }
       `}</style>
     </div>
