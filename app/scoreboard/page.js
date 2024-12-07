@@ -37,7 +37,7 @@ export default function ScoreboardPage() {
     );
   }
 
-  // Удаляем "de_" из названия карты (учитываем регистр)
+  // Удаляем "de_" из названия карты, если оно есть, и делаем uppercase
   const mapName = matchData.map.name.replace(/^de_/i, '').toUpperCase();
 
   const ctTeam = matchData.map.team_ct;
@@ -121,17 +121,17 @@ export default function ScoreboardPage() {
           display: flex;
           flex-direction: column;
           align-items: center;
-          gap: 10px; /* Меньше расстояние между блоками */
+          gap: 10px; 
         }
 
         .map-name {
-          font-size: 60px; /* Крупнее шрифт */
+          font-size: 60px; 
           font-weight: bold;
           color: #fff;
           text-transform: uppercase;
           background: #2e2547;
           border-radius: 8px;
-          padding: 5px 10px; /* Меньше отступы */
+          padding: 5px 10px; 
           text-align: center;
         }
 
@@ -142,13 +142,13 @@ export default function ScoreboardPage() {
           width: 100%;
           background: #2e2547;
           border-radius: 8px;
-          padding: 5px 10px; /* Меньше отступы */
+          padding: 5px 10px; 
         }
 
         .team-info-line {
           display: flex;
           align-items: center;
-          gap: 5px; /* Меньше зазор между элементами */
+          gap: 5px;
         }
 
         .team-logo {
@@ -158,14 +158,14 @@ export default function ScoreboardPage() {
         }
 
         .team-name {
-          font-size: 24px; /* Крупнее шрифт */
+          font-size: 24px;
           font-weight: bold;
           text-transform: uppercase;
           color: #fff;
         }
 
         .score-middle {
-          font-size: 48px; /* Крупнее шрифт */
+          font-size: 48px; 
           font-weight: bold;
           color: #fff;
         }
@@ -206,7 +206,7 @@ export default function ScoreboardPage() {
         }
 
         .col-header, .col-header-player {
-          font-size: 16px; /* Крупнее шрифт */
+          font-size: 16px; 
           font-weight: bold;
           text-transform: uppercase;
           color: #fff;
@@ -231,7 +231,7 @@ export default function ScoreboardPage() {
           width: 60px;
           height: 60px;
           border-radius: 8px;
-          object-fit: contain; /* Чтобы не обрезать изображение */
+          object-fit: contain; 
         }
 
         .player-name-wrapper {
@@ -244,7 +244,7 @@ export default function ScoreboardPage() {
 
         .player-name {
           font-weight: bold;
-          font-size: 16px; /* Крупнее шрифт */
+          font-size: 16px; 
           text-transform: uppercase;
           white-space: nowrap;
           overflow: hidden;
@@ -254,7 +254,7 @@ export default function ScoreboardPage() {
 
         .stat-value {
           font-weight: bold;
-          font-size: 16px; /* Крупнее шрифт */
+          font-size: 16px; 
           text-align: center;
           color: #fff;
         }
@@ -266,10 +266,13 @@ export default function ScoreboardPage() {
           padding: 5px;
           margin-top: 10px;
           box-sizing: border-box;
+          display: flex;
+          flex-direction: column;
+          align-items: center; /* Центрируем содержимое по горизонтали */
         }
 
         .round-history-title {
-          font-size: 18px; /* Крупнее шрифт */
+          font-size: 18px; 
           font-weight: bold;
           text-transform: uppercase;
           color: #fff;
@@ -277,16 +280,14 @@ export default function ScoreboardPage() {
           text-align: center;
         }
 
-        /* Убираем горизонтальную прокрутку, показываем все раунды сразу 
-           Для этого позволим им переноситься на новую строку */
+        /* Центрируем и раунды, и разделитель, используем wrap */
         .halves-container {
           display: flex;
-          align-items: flex-start;
-          justify-content: flex-start;
+          justify-content: center; 
+          align-items: center;
+          flex-wrap: wrap;
+          gap: 5px; 
           width: 100%;
-          position: relative;
-          flex-wrap: wrap; /* Позволяем перенос раундов */
-          gap: 5px; /* Меньше зазоры между раундами и разделителем */
         }
 
         .rounds-divider {
@@ -297,10 +298,9 @@ export default function ScoreboardPage() {
           flex-shrink:0;
         }
 
-        /* Фиксированный размер для раундов, прямоугольники */
         .round-wrapper {
           width: 40px; 
-          height: 50px;
+          height: 60px;
           display: flex;
           flex-direction: column;
           align-items: center;
@@ -309,7 +309,7 @@ export default function ScoreboardPage() {
           border-radius: 2px;
           background: #3a3357;
           flex-shrink: 0;
-          padding: 2px; /* Меньше отступов */
+          padding: 2px;
         }
 
         .round-wrapper.ct-win {
@@ -327,7 +327,7 @@ export default function ScoreboardPage() {
         }
 
         .round-number {
-          font-size: 14px; /* Чуть крупнее шрифт */
+          font-size: 14px; 
           color: #fff;
         }
       `}</style>
