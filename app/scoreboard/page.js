@@ -37,7 +37,7 @@ export default function ScoreboardPage() {
     );
   }
 
-  // Удаляем "de_" из названия карты, если оно есть, и делаем uppercase
+  // Удаляем "de_" из названия карты (если есть) и делаем uppercase
   const mapName = matchData.map.name.replace(/^de_/i, '').toUpperCase();
 
   const ctTeam = matchData.map.team_ct;
@@ -53,6 +53,7 @@ export default function ScoreboardPage() {
   let ctPlayers = playersArray.filter(p => p.team === 'CT');
   let tPlayers = playersArray.filter(p => p.team === 'T');
 
+  // Сортируем по убийствам
   ctPlayers.sort((a, b) => b.match_stats.kills - a.match_stats.kills);
   tPlayers.sort((a, b) => b.match_stats.kills - a.match_stats.kills);
 
@@ -62,13 +63,13 @@ export default function ScoreboardPage() {
 
       <div className="teams-line">
         <div className="team-info-line ct-side">
-          <img alt="CT Team" src={`/teams/${ctTeam.name}.png`} width={50} height={50} className="team-logo"/>
+          <img alt="CT Team" src={`/teams/${ctTeam.name}.png`} width={40} height={40} className="team-logo"/>
           <span className="team-name">{ctTeam.name.toUpperCase()}</span>
         </div>
         <div className="score-middle">{ctTeam.score} - {tTeam.score}</div>
         <div className="team-info-line t-side">
           <span className="team-name">{tTeam.name.toUpperCase()}</span>
-          <img alt="T Team" src={`/teams/${tTeam.name}.png`} width={50} height={50} className="team-logo"/>
+          <img alt="T Team" src={`/teams/${tTeam.name}.png`} width={40} height={40} className="team-logo"/>
         </div>
       </div>
 
@@ -110,7 +111,7 @@ export default function ScoreboardPage() {
         body {
           margin: 0;
           padding: 0;
-          background: transparent;
+          background: #000; /* Можно сделать фон темнее для контраста */
           font-family: 'BLENDERPRO-BOLD', sans-serif;
           color: #fff;
         }
@@ -121,17 +122,17 @@ export default function ScoreboardPage() {
           display: flex;
           flex-direction: column;
           align-items: center;
-          gap: 10px; 
+          gap: 10px;
         }
 
         .map-name {
-          font-size: 60px; 
+          font-size: 48px; 
           font-weight: bold;
           color: #fff;
           text-transform: uppercase;
           background: #2e2547;
           border-radius: 8px;
-          padding: 5px 10px; 
+          padding: 10px 20px; 
           text-align: center;
         }
 
@@ -142,30 +143,30 @@ export default function ScoreboardPage() {
           width: 100%;
           background: #2e2547;
           border-radius: 8px;
-          padding: 5px 10px; 
+          padding: 10px 20px; 
         }
 
         .team-info-line {
           display: flex;
           align-items: center;
-          gap: 5px;
+          gap: 10px;
         }
 
         .team-logo {
-          width: 50px;
-          height: 50px;
+          width: 40px;
+          height: 40px;
           object-fit: contain;
         }
 
         .team-name {
-          font-size: 24px;
+          font-size: 18px;
           font-weight: bold;
           text-transform: uppercase;
           color: #fff;
         }
 
         .score-middle {
-          font-size: 48px; 
+          font-size: 36px; 
           font-weight: bold;
           color: #fff;
         }
@@ -173,7 +174,7 @@ export default function ScoreboardPage() {
         .teams-stats-container {
           width: 100%;
           display: flex;
-          gap: 10px;
+          gap: 20px;
           justify-content: space-between;
         }
 
@@ -187,26 +188,26 @@ export default function ScoreboardPage() {
 
         .team-stat-container {
           border-radius: 8px;
-          padding: 5px; 
+          padding: 10px; 
           flex: 1;
           display: flex;
           flex-direction: column;
-          gap: 5px;
+          gap: 10px;
         }
 
         .team-table-header {
           display: grid;
           grid-template-columns: [player] 1fr [kills] 60px [deaths] 60px [kd] 60px;
           text-align: center;
-          gap: 5px;
+          gap: 10px;
           align-items: center;
           background: rgba(0,0,0,0.3);
           border-radius: 4px;
-          padding: 5px;
+          padding: 10px;
         }
 
         .col-header, .col-header-player {
-          font-size: 16px; 
+          font-size: 14px; 
           font-weight: bold;
           text-transform: uppercase;
           color: #fff;
@@ -214,7 +215,7 @@ export default function ScoreboardPage() {
 
         .col-header-player {
           text-align: left;
-          padding-left: 5px;
+          padding-left: 10px;
         }
 
         .player-row {
@@ -222,14 +223,14 @@ export default function ScoreboardPage() {
           grid-template-columns: [player] 1fr [kills] 60px [deaths] 60px [kd] 60px;
           align-items: center;
           background: rgba(0,0,0,0.2);
-          padding: 5px;
+          padding: 10px;
           border-radius: 8px;
-          gap: 5px;
+          gap: 10px;
         }
 
         .player-img {
-          width: 60px;
-          height: 60px;
+          width: 50px;
+          height: 50px;
           border-radius: 8px;
           object-fit: contain; 
         }
@@ -237,14 +238,14 @@ export default function ScoreboardPage() {
         .player-name-wrapper {
           display: flex;
           align-items: center;
-          gap: 5px;
-          padding-left: 5px;
+          gap: 10px;
+          padding-left: 10px;
           overflow: hidden;
         }
 
         .player-name {
           font-weight: bold;
-          font-size: 16px; 
+          font-size: 14px; 
           text-transform: uppercase;
           white-space: nowrap;
           overflow: hidden;
@@ -254,7 +255,7 @@ export default function ScoreboardPage() {
 
         .stat-value {
           font-weight: bold;
-          font-size: 16px; 
+          font-size: 14px; 
           text-align: center;
           color: #fff;
         }
@@ -263,24 +264,23 @@ export default function ScoreboardPage() {
           width: 100%;
           background: #201c2c;
           border-radius: 8px;
-          padding: 5px;
+          padding: 10px;
           margin-top: 10px;
           box-sizing: border-box;
           display: flex;
           flex-direction: column;
-          align-items: center; /* Центрируем содержимое по горизонтали */
+          align-items: center;
         }
 
         .round-history-title {
-          font-size: 18px; 
+          font-size: 14px; 
           font-weight: bold;
           text-transform: uppercase;
           color: #fff;
-          margin-bottom: 5px;
+          margin-bottom: 10px;
           text-align: center;
         }
 
-        /* Центрируем и раунды, и разделитель, используем wrap */
         .halves-container {
           display: flex;
           justify-content: center; 
@@ -321,13 +321,13 @@ export default function ScoreboardPage() {
         }
 
         .round-icon {
-          width: 24px;
-          height: 24px;
+          width: 20px;
+          height: 20px;
           object-fit: contain;
         }
 
         .round-number {
-          font-size: 14px; 
+          font-size: 12px; 
           color: #fff;
         }
       `}</style>
@@ -349,8 +349,8 @@ function renderPlayerRow(player) {
           className="player-img"
           src={`/players/${lowercaseSteamId}.png`} 
           alt={name}
-          width={60}
-          height={60}
+          width={50}
+          height={50}
           onError={(e) => { e.currentTarget.src = '/players/idle.png'; }}
         />
         <div className="player-name">{name}</div>
