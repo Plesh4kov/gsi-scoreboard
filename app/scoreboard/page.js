@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import Image from 'next/image'; // Используем Image из next/image
+import Image from 'next/image';
 
 export default function ScoreboardPage() {
   const [matchData, setMatchData] = useState(null);
@@ -42,7 +42,7 @@ export default function ScoreboardPage() {
   const tTeam = matchData.map.team_t;
   const allPlayers = matchData.allplayers;
 
-  // Создаем массив игроков с включенным steamid
+  // Преобразуем в массив, чтобы было удобно сортировать и отображать
   const playersArray = Object.entries(allPlayers).map(([steamid, playerData]) => ({
     steamid,
     ...playerData
@@ -51,51 +51,59 @@ export default function ScoreboardPage() {
   let ctPlayers = playersArray.filter(p => p.team === 'CT');
   let tPlayers = playersArray.filter(p => p.team === 'T');
 
+  // Сортируем по количеству убийств
   ctPlayers.sort((a, b) => b.match_stats.kills - a.match_stats.kills);
   tPlayers.sort((a, b) => b.match_stats.kills - a.match_stats.kills);
 
+  // Возьмём первые 5 игроков (если их больше)
+  ctPlayers = ctPlayers.slice(0, 5);
+  tPlayers = tPlayers.slice(0, 5);
+
+  const ctTeamName = ctTeam.name.toUpperCase();
+  const tTeamName = tTeam.name.toUpperCase();
+
+  // Заглушки ADR
+  const ADR_PLACEHOLDER = 'N/A';
+
   return (
     <div className="scoreboard-container">
-      <div className="scoreboard-header">
-        <div className="match-info">
-          <div className="team-scores">
-            <div className="team-block ct-side">
-              <Image alt="CT Team" className="team-logo" src={`teams/${ctTeam.name}.png`} width={50} height={50}/>
-              <span className="team-name">{ctTeam.name}</span>
-              <span className="score ct">{ctTeam.score}</span>
-            </div>
-            <div className="score-divider">:</div>
-            <div className="team-block t-side">
-              <span className="score t">{tTeam.score}</span>
-              <span className="team-name">{tTeam.name}</span>
-              <Image alt="T Team" className="team-logo" src={`teams/${tTeam.name}.png`} width={50} height={50}/>
-            </div>
-          </div>
-          <div className="map-info">{matchData.map.name}</div>
+      {/* Название карты сверху */}
+      <div className="map-name">{matchData.map.name.toUpperCase()}</div>
+
+      {/* Блок с командами и счётом */}
+      <div className="teams-line">
+        <div className="team-info-line ct-side">
+          <Image alt="CT Team" src={`/teams/${ctTeam.name}.png`} width={50} height={50}/>
+          <span className="team-name">{ctTeam.name.toUpperCase()}</span>
+        </div>
+        <div className="score-middle">{ctTeam.score} - {tTeam.score}</div>
+        <div className="team-info-line t-side">
+          <span className="team-name">{tTeam.name.toUpperCase()}</span>
+          <Image alt="T Team" src={`/teams/${tTeam.name}.png`} width={50} height={50}/>
         </div>
       </div>
 
-      <div className="teams-wrapper">
-        {/* CT TEAM */}
-        <div className="team-row">
-          <div className="team-header ct-side">
-            <Image alt="CT Team" className="team-logo-header" src={`teams/${ctTeam.name}.png`} width={40} height={40} />
-            <span className="team-name-header">{ctTeam.name}</span>
-          </div>
-          <div className="players-row">
-            {ctPlayers.map((player) => renderPlayerCard(player))}
-          </div>
+      {/* Заголовки столбцов */}
+      <div className="table-header-row">
+        <div className="team-table-header ct-side">
+          <span className="col-header">Kills</span>
+          <span className="col-header">Deaths</span>
+          <span className="col-header">ADR</span>
         </div>
+        <div className="team-table-header t-side">
+          <span className="col-header">Kills</span>
+          <span className="col-header">Deaths</span>
+          <span className="col-header">ADR</span>
+        </div>
+      </div>
 
-        {/* T TEAM */}
-        <div className="team-row">
-          <div className="team-header t-side">
-            <Image alt="T Team" className="team-logo-header" src={`teams/${tTeam.name}.png`} width={40} height={40} />
-            <span className="team-name-header">{tTeam.name}</span>
-          </div>
-          <div className="players-row">
-            {tPlayers.map((player) => renderPlayerCard(player))}
-          </div>
+      {/* Ряд игроков */}
+      <div className="players-table-row">
+        <div className="players-column ct-side">
+          {ctPlayers.map(player => renderPlayerRow(player, ADR_PLACEHOLDER))}
+        </div>
+        <div className="players-column t-side">
+          {tPlayers.map(player => renderPlayerRow(player, ADR_PLACEHOLDER))}
         </div>
       </div>
 
@@ -109,49 +117,43 @@ export default function ScoreboardPage() {
         }
 
         .scoreboard-container {
-          width: 1200px;
+          width: 1000px;
           max-width: 90%;
-          margin: 30px auto;
-          background: #201c2c;
-          border-radius: 8px;
-          padding: 20px;
-          box-shadow: 0 0 20px rgba(0,0,0,0.5);
-        }
-
-        .scoreboard-header {
-          margin-bottom: 25px;
-          padding-bottom: 15px;
-          border-bottom: 1px solid #444;
+          margin: 40px auto;
           display: flex;
           flex-direction: column;
           align-items: center;
-          text-align: center;
+          gap: 20px;
         }
 
-        .match-info {
+        .map-name {
+          font-size: 48px;
+          font-weight: bold;
+          color: #fff;
+          text-transform: uppercase;
+          margin-bottom: 20px;
+        }
+
+        .teams-line {
           display: flex;
-          flex-direction: column;
+          justify-content: space-between;
+          align-items: center;
+          width: 100%;
+          padding: 10px 20px;
+          background: #2e2547;
+          border-radius: 8px;
+        }
+
+        .team-info-line {
+          display: flex;
           align-items: center;
           gap: 10px;
         }
 
-        .team-scores {
-          display: flex;
-          gap: 20px;
-          align-items: center;
-          font-size: 28px;
-          font-weight: bold;
-        }
-
-        .team-block {
-          display: flex;
-          align-items: center;
-          gap: 15px;
-        }
-
-        .team-block .team-name {
-          text-transform: uppercase;
+        .team-name {
           font-size: 24px;
+          font-weight: bold;
+          text-transform: uppercase;
         }
 
         .ct-side .team-name {
@@ -162,128 +164,107 @@ export default function ScoreboardPage() {
           color: #e0bf75;
         }
 
-        .score-divider {
-          font-size: 32px;
-          color: #aaa;
+        .score-middle {
+          font-size: 36px;
+          font-weight: bold;
+          color: #fff;
         }
 
-        .map-info {
-          font-size: 18px;
+        .table-header-row {
+          display: flex;
+          justify-content: space-between;
+          width: 100%;
+          padding: 10px 0;
+        }
+
+        .team-table-header {
+          display: flex;
+          width: 45%;
+          justify-content: space-around;
+          background: #201c2c;
+          border-radius: 8px;
+          padding: 10px 0;
+        }
+
+        .col-header {
+          font-size: 14px;
+          font-weight: bold;
+          text-transform: uppercase;
           color: #ccc;
         }
 
-        .teams-wrapper {
+        .players-table-row {
           display: flex;
-          flex-direction: column;
-          gap: 40px;
-          margin-top: 20px;
-        }
-
-        .team-row {
-          background: #2a2440;
-          padding: 20px;
-          border-radius: 8px;
-        }
-
-        .team-header {
-          display: flex;
-          align-items: center;
-          gap: 10px;
-          margin-bottom: 20px;
-        }
-
-        .team-name-header {
-          text-transform: uppercase;
-          font-size: 20px;
-          font-weight: bold;
-        }
-
-        .ct-side .team-name-header {
-          color: #c94af1;
-        }
-
-        .t-side .team-name-header {
-          color: #e0bf75;
-        }
-
-        .players-row {
-          display: flex;
+          justify-content: space-between;
+          width: 100%;
           gap: 20px;
-          flex-wrap: wrap;
-          justify-content: start;
         }
 
-        .player-card {
-          background: #3a3357;
-          border-radius: 8px;
-          padding: 15px;
-          width: 140px;
+        .players-column {
+          width: 45%;
           display: flex;
           flex-direction: column;
+          gap: 10px;
+        }
+
+        .player-row {
+          display: flex;
           align-items: center;
-          text-align: center;
+          background: #2a2440;
+          padding: 10px;
+          border-radius: 8px;
+          gap: 10px;
+        }
+
+        .player-img {
+          border-radius: 50%;
         }
 
         .player-name {
-          font-size: 14px;
           font-weight: bold;
-          margin-bottom: 8px;
+          font-size: 14px;
+          flex: 2;
+          text-transform: uppercase;
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
-          max-width: 100%;
         }
 
         .player-stats {
-          font-size: 12px;
           display: flex;
-          flex-direction: column;
-          gap: 4px;
-        }
-
-        .player-stats div {
-          display: flex;
-          justify-content: space-between;
-        }
-
-        .stat-label {
-          color: #bbb;
+          flex: 3;
+          justify-content: space-around;
         }
 
         .stat-value {
           font-weight: bold;
+          font-size: 14px;
+          min-width: 40px;
+          text-align: center;
         }
       `}</style>
     </div>
   );
 }
 
-function renderPlayerCard(player) {
-  const { name, steamid } = player;
-  const { kills, deaths, assists } = player.match_stats;
-  const kd = deaths === 0 ? kills.toString() : (kills/deaths).toFixed(2);
-
-  const ADR = 'N/A';
-  const KAST = 'N/A';
-  const Damage = 'N/A';
-
+function renderPlayerRow(player, ADR_PLACEHOLDER) {
+  const { name, steamid, match_stats } = player;
+  const { kills, deaths } = match_stats;
+  const adr = ADR_PLACEHOLDER; // Заглушка для ADR
   return (
-    <div className="player-card" key={steamid}>
+    <div className="player-row" key={steamid}>
       <Image 
-        src={`/players/${steamid}.jpg`}
-        alt={name}
-        width={60}
-        height={60}
+        className="player-img"
+        src={`/players/${steamid}.jpg`} 
+        alt={name} 
+        width={40} 
+        height={40} 
       />
       <div className="player-name">{name}</div>
       <div className="player-stats">
-        <div><span className="stat-label">K:</span><span className="stat-value">{kills}</span></div>
-        <div><span className="stat-label">D:</span><span className="stat-value">{deaths}</span></div>
-        <div><span className="stat-label">A:</span><span className="stat-value">{assists}</span></div>
-        <div><span className="stat-label">KD:</span><span className="stat-value">{kd}</span></div>
-        <div><span className="stat-label">ADR:</span><span className="stat-value">{ADR}</span></div>
-        <div><span className="stat-label">KAST:</span><span className="stat-value">{KAST}</span></div>
-        <div><span className="stat-label">Damage:</span><span className="stat-value">{Damage}</span></div>
+        <div className="stat-value">{kills}</div>
+        <div className="stat-value">{deaths}</div>
+        <div className="stat-value">{adr}</div>
       </div>
     </div>
   );
