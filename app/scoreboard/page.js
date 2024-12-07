@@ -102,7 +102,7 @@ export default function ScoreboardPage() {
         body {
           margin: 0;
           padding: 0;
-          background: #000; /* Фон страницы темный */
+          background: #000;
           font-family: Arial, sans-serif;
           color: #fff;
         }
@@ -255,7 +255,7 @@ export default function ScoreboardPage() {
           width: 100%;
           background: #201c2c;
           border-radius: 8px;
-          padding: 10px;
+          padding: 20px; /* увеличиваем отступы */
           margin-top: 10px;
           box-sizing: border-box;
         }
@@ -265,24 +265,25 @@ export default function ScoreboardPage() {
           font-weight: bold;
           text-transform: uppercase;
           color: #fff;
-          margin-bottom: 10px;
+          margin-bottom: 20px; /* побольше отступ под заголовком */
           text-align: left;
           padding-left: 10px;
         }
 
         .halves-container {
-          position: relative;
           display: flex;
           align-items: center;
-          justify-content: center;
+          justify-content: space-between;
+          width: 100%;
         }
 
-        .first-half-rounds, .second-half-rounds {
+        .first-half-rounds,
+        .second-half-rounds {
           display: flex;
-          gap: 5px;
+          gap: 10px;
           flex-wrap: nowrap;
           align-items: center;
-          flex:1;
+          flex: 1;
         }
 
         .first-half-rounds {
@@ -294,12 +295,10 @@ export default function ScoreboardPage() {
         }
 
         .rounds-divider {
-          position: absolute;
-          left: 50%;
-          transform: translateX(-50%);
-          width: 1px;
+          width: 2px;
           background: #ccc;
-          height: 20px;
+          height: 50px; /* делаем разделитель выше */
+          margin: 0 60px; /* больше пространства вокруг разделителя */
         }
 
         .round-wrapper {
