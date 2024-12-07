@@ -249,7 +249,6 @@ export default function ScoreboardPage() {
           text-align: center;
         }
 
-        /* Round History */
         .round-history-container {
           width: 100%;
           background: #201c2c;
@@ -303,17 +302,6 @@ export default function ScoreboardPage() {
           position: relative;
         }
 
-        .halftime-label {
-          position: absolute;
-          left: 50%;
-          top: 50%;
-          transform: translate(-50%, -50%) rotate(-90deg);
-          font-size: 14px;
-          font-weight: bold;
-          text-transform: uppercase;
-          color: #fff;
-        }
-
         .round-wrapper {
           width: 30px;
           height: 50px;
@@ -324,16 +312,15 @@ export default function ScoreboardPage() {
           gap: 2px;
           border-radius: 2px;
           position: relative;
-          background: #3a3357; /* базовый фон */
+          background: #3a3357;
         }
 
-        /* Цвет фона в зависимости от результата */
         .round-wrapper.ct-win {
-          background: #3b3a9f; /* синий для CT */
+          background: #3b3a9f;
         }
 
         .round-wrapper.t-win {
-          background: #9f3b3b; /* красный для T */
+          background: #9f3b3b;
         }
 
         .round-icon {
@@ -391,7 +378,6 @@ function renderRoundHistory(roundWins) {
         {firstHalfRounds.map(roundNumber => createRoundCell(roundNumber, roundWins[roundNumber.toString()]))}
       </div>
       <div className="rounds-divider"></div>
-      <div className="halftime-label">HALFTIME</div>
       <div className="second-half-rounds">
         {secondHalfRounds.map(roundNumber => createRoundCell(roundNumber, roundWins[roundNumber.toString()]))}
       </div>
@@ -403,8 +389,6 @@ function createRoundCell(roundNumber, result) {
   let iconPath;
   let roundClass = '';
 
-  // Определяем, кто выиграл
-  // Предполагаем, что все ct_win_* - победа CT, все t_win_* - победа T
   if (result.startsWith('ct_win')) {
     roundClass = 'ct-win';
   } else if (result.startsWith('t_win')) {
@@ -413,28 +397,28 @@ function createRoundCell(roundNumber, result) {
 
   switch (result) {
     case 't_win_elimination':
-        iconPath = 'icons/skull.png'; // замените на свои иконки
-        break;
+      iconPath = '/icons/skull.png';
+      break;
     case 't_win_bomb':
-        iconPath = 'icons/bomb.png';
-        break;
+      iconPath = '/icons/bomb.png';
+      break;
     case 'ct_win_elimination':
-        iconPath = 'icons/skull.png';
-        break;
+      iconPath = '/icons/skull.png';
+      break;
     case 'ct_win_defuse':
-        iconPath = 'icons/defuse.png';
-        break;
+      iconPath = '/icons/defuse.png';
+      break;
     case 'ct_win_time':
-        iconPath = 'icons/clock.png';
-        break;
+      iconPath = '/icons/clock.png';
+      break;
     default:
-        iconPath = 'icons/default.png';
-        break;
+      iconPath = '/icons/default.png';
+      break;
   }
 
   return (
     <div className={`round-wrapper ${roundClass}`} key={roundNumber}>
-      <Image src={`/${iconPath}`} alt={result} className="round-icon" width={16} height={16} />
+      <Image src={iconPath} alt={result} className="round-icon" width={16} height={16} />
       <span className="round-number">{roundNumber}</span>
     </div>
   );
