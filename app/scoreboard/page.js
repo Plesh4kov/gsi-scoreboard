@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import Image from 'next/image';
 
 export default function ScoreboardPage() {
   const [matchData, setMatchData] = useState(null);
@@ -27,7 +26,7 @@ export default function ScoreboardPage() {
       <div style={{
         color: '#fff',
         fontFamily: 'Arial',
-        backgroundColor: '#111',
+        backgroundColor: 'transparent',
         height:'100vh',
         display:'flex',
         alignItems:'center',
@@ -37,6 +36,9 @@ export default function ScoreboardPage() {
       </div>
     );
   }
+
+  // Удаляем "de_" из названия карты (учитываем регистр)
+  const mapName = matchData.map.name.replace(/^de_/i, '').toUpperCase();
 
   const ctTeam = matchData.map.team_ct;
   const tTeam = matchData.map.team_t;
@@ -56,17 +58,17 @@ export default function ScoreboardPage() {
 
   return (
     <div className="scoreboard-container">
-      <div className="map-name">{matchData.map.name.toUpperCase()}</div>
+      <div className="map-name">{mapName}</div>
 
       <div className="teams-line">
         <div className="team-info-line ct-side">
-          <Image alt="CT Team" src={`/teams/${ctTeam.name}.png`} width={50} height={50} className="team-logo"/>
+          <img alt="CT Team" src={`/teams/${ctTeam.name}.png`} width={50} height={50} className="team-logo"/>
           <span className="team-name">{ctTeam.name.toUpperCase()}</span>
         </div>
         <div className="score-middle">{ctTeam.score} - {tTeam.score}</div>
         <div className="team-info-line t-side">
           <span className="team-name">{tTeam.name.toUpperCase()}</span>
-          <Image alt="T Team" src={`/teams/${tTeam.name}.png`} width={50} height={50} className="team-logo"/>
+          <img alt="T Team" src={`/teams/${tTeam.name}.png`} width={50} height={50} className="team-logo"/>
         </div>
       </div>
 
@@ -255,7 +257,8 @@ export default function ScoreboardPage() {
           width: 100%;
           background: #201c2c;
           border-radius: 8px;
-          padding: 20px;
+          /* уменьшили отступы */
+          padding: 10px; 
           margin-top: 10px;
           box-sizing: border-box;
         }
@@ -265,7 +268,8 @@ export default function ScoreboardPage() {
           font-weight: bold;
           text-transform: uppercase;
           color: #fff;
-          margin-bottom: 20px;
+          /* уменьшим нижний отступ */
+          margin-bottom: 10px; 
           text-align: center;
         }
 
@@ -275,17 +279,17 @@ export default function ScoreboardPage() {
           justify-content: space-between;
           width: 100%;
           position: relative;
-          overflow: hidden; /* убираем скролл, всё должно поместиться */
+          overflow: hidden;
         }
 
-        /* Теперь делаем так, чтобы все раунды были в одну линию и подстраивались по ширине */
-        .first-half-rounds, .second-half-rounds {
+        .first-half-rounds,
+        .second-half-rounds {
           display: flex;
           flex-wrap: nowrap;
           gap: 10px;
           align-items: center;
-          /* Вместо overflow, позволим им сжиматься */
-          flex-shrink: 1;
+          justify-content: center;
+          flex: 1;
         }
 
         .rounds-divider {
@@ -293,6 +297,7 @@ export default function ScoreboardPage() {
           background: #ccc;
           height: 100px;
           margin: 0 30px;
+          position: relative;
           flex-shrink:0;
         }
 
@@ -304,15 +309,11 @@ export default function ScoreboardPage() {
           gap: 2px;
           border-radius: 2px;
           position: relative;
-
-          /* Ключевые настройки: 
-             Не фиксируем ширину и высоту.
-             Позволяем элементам сжиматься. */
+          background: #3a3357;
           flex-shrink: 1;
           flex-grow: 1;
-          min-width: 0; /* позволяет сжимать ширину меньше контента */
+          min-width: 0;
           padding: 5px;
-          background: #3a3357;
         }
 
         .round-wrapper.ct-win {
@@ -346,12 +347,13 @@ function renderPlayerRow(player) {
   return (
     <div className="player-row" key={steamid}>
       <div className="player-name-wrapper">
-        <Image 
+        <img 
           className="player-img"
-          src={`/players/${steamid}.jpg`} 
-          alt={name} 
-          width={40} 
-          height={40} 
+          src={`/players/${steamid}.png`} 
+          alt={name}
+          width={40}
+          height={40}
+          onError={(e) => { e.currentTarget.src = '/players/idle.png'; }}
         />
         <div className="player-name">{name}</div>
       </div>
@@ -389,13 +391,13 @@ function createRoundCell(roundNumber, result) {
   let iconPath;
   let roundClass = '';
 
-  if (result.startsWith('ct_win')) {
+  if (result.toLowerCase().startsWith('ct_win')) {
     roundClass = 'ct-win';
-  } else if (result.startsWith('t_win')) {
+  } else if (result.toLowerCase().startsWith('t_win')) {
     roundClass = 't-win';
   }
 
-  switch (result) {
+  switch (result.toLowerCase()) {
     case 't_win_elimination':
       iconPath = '/icons/skull.png';
       break;
@@ -418,7 +420,7 @@ function createRoundCell(roundNumber, result) {
 
   return (
     <div className={`round-wrapper ${roundClass}`} key={roundNumber}>
-      <Image src={iconPath} alt={result} className="round-icon" />
+      <img src={iconPath} alt={result} className="round-icon" />
       <span className="round-number">{roundNumber}</span>
     </div>
   );
