@@ -1,6 +1,7 @@
 'use client';
+
 import { useEffect, useState } from 'react';
-import Image from 'next/image'; // Используем next/image
+import Image from 'next/image'; // Используем Image из next/image
 
 export default function ScoreboardPage() {
   const [matchData, setMatchData] = useState(null);
@@ -41,6 +42,7 @@ export default function ScoreboardPage() {
   const tTeam = matchData.map.team_t;
   const allPlayers = matchData.allplayers;
 
+  // Создаем массив игроков с включенным steamid
   const playersArray = Object.entries(allPlayers).map(([steamid, playerData]) => ({
     steamid,
     ...playerData
@@ -160,10 +162,6 @@ export default function ScoreboardPage() {
           color: #e0bf75;
         }
 
-        .team-logo {
-          border-radius: 4px;
-        }
-
         .score-divider {
           font-size: 32px;
           color: #aaa;
@@ -226,10 +224,6 @@ export default function ScoreboardPage() {
           text-align: center;
         }
 
-        .player-card :global(img) {
-          border-radius: 50%;
-        }
-
         .player-name {
           font-size: 14px;
           font-weight: bold;
@@ -268,24 +262,18 @@ function renderPlayerCard(player) {
   const { name, steamid } = player;
   const { kills, deaths, assists } = player.match_stats;
   const kd = deaths === 0 ? kills.toString() : (kills/deaths).toFixed(2);
-  
+
   const ADR = 'N/A';
   const KAST = 'N/A';
   const Damage = 'N/A';
 
-  // Предполагается, что /players/default.jpg есть, если нет файла по steamid
-  // Т.к. Image не имеет onError, можно попытаться заранее знать о наличии файла
-  // Или положить одинаковые файлы для теста.
   return (
     <div className="player-card" key={steamid}>
       <Image 
-        src={`/players/${steamid}.jpg`} 
-        alt={name} 
-        width={60} 
+        src={`/players/${steamid}.jpg`}
+        alt={name}
+        width={60}
         height={60}
-        onLoadingComplete={(e) => {
-          // Нет onError, если файла нет, попробуйте предварительно проверить или всегда иметь default.jpg
-        }}
       />
       <div className="player-name">{name}</div>
       <div className="player-stats">
