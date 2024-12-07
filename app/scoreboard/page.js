@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import Image from 'next/image'; // Используем next/image вместо img
+import Image from 'next/image';
 
 export default function ScoreboardPage() {
   const [matchData, setMatchData] = useState(null);
@@ -27,7 +27,7 @@ export default function ScoreboardPage() {
       <div style={{
         color: '#fff',
         fontFamily: 'BLENDERPRO-BOLD, sans-serif',
-        backgroundColor: 'transparent',
+        backgroundColor: '#000',
         height:'100vh',
         display:'flex',
         alignItems:'center',
@@ -38,7 +38,7 @@ export default function ScoreboardPage() {
     );
   }
 
-  // Удаляем "de_" из названия карты (если есть) и делаем uppercase
+  // Преобразуем название карты
   const mapName = matchData.map.name.replace(/^de_/i, '').toUpperCase();
 
   const ctTeam = matchData.map.team_ct;
@@ -59,8 +59,8 @@ export default function ScoreboardPage() {
 
   return (
     <div className="scoreboard-container">
-      <div className="map-name">MAP: {mapName}</div>
-
+      <div className="main-title">MATCH RESULTS</div>
+      <div className="sub-info">MAP: {mapName}</div>
       <div className="teams-line">
         <div className="team-info-line ct-side">
           <Image alt="CT Team" src={`/teams/${ctTeam.name}.png`} width={30} height={30} className="team-logo"/>
@@ -77,8 +77,8 @@ export default function ScoreboardPage() {
         <div className="team-stat-container ct-side">
           <div className="team-table-header">
             <span className="col-header-player">PLAYER</span>
-            <span className="col-header">KILLS</span>
-            <span className="col-header">DEATHS</span>
+            <span className="col-header">K</span>
+            <span className="col-header">D</span>
             <span className="col-header">KD</span>
           </div>
           {ctPlayers.map(player => renderPlayerRow(player))}
@@ -86,8 +86,8 @@ export default function ScoreboardPage() {
         <div className="team-stat-container t-side">
           <div className="team-table-header">
             <span className="col-header-player">PLAYER</span>
-            <span className="col-header">KILLS</span>
-            <span className="col-header">DEATHS</span>
+            <span className="col-header">K</span>
+            <span className="col-header">D</span>
             <span className="col-header">KD</span>
           </div>
           {tPlayers.map(player => renderPlayerRow(player))}
@@ -125,15 +125,19 @@ export default function ScoreboardPage() {
           gap: 10px;
         }
 
-        .map-name {
-          font-size: 36px; 
+        .main-title {
+          font-size: 48px;
           font-weight: bold;
           color: #fff;
           text-transform: uppercase;
-          background: #2e2547;
-          border-radius: 8px;
-          padding: 5px 15px; 
-          text-align: center;
+          margin-bottom: 5px;
+        }
+
+        .sub-info {
+          font-size: 14px;
+          color: #bbb;
+          margin-bottom: 20px;
+          text-transform: uppercase;
         }
 
         .teams-line {
@@ -159,14 +163,14 @@ export default function ScoreboardPage() {
         }
 
         .team-name {
-          font-size: 14px;
+          font-size: 12px;
           font-weight: bold;
           text-transform: uppercase;
           color: #fff;
         }
 
         .score-middle {
-          font-size: 24px; 
+          font-size: 24px;
           font-weight: bold;
           color: #fff;
         }
@@ -174,7 +178,7 @@ export default function ScoreboardPage() {
         .teams-stats-container {
           width: 100%;
           display: flex;
-          gap: 10px;
+          gap: 20px;
           justify-content: space-between;
         }
 
@@ -197,7 +201,7 @@ export default function ScoreboardPage() {
 
         .team-table-header {
           display: grid;
-          grid-template-columns: [player] 1fr [kills] 40px [deaths] 40px [kd] 40px;
+          grid-template-columns: [player] 1fr [kills] 30px [deaths] 30px [kd] 30px;
           text-align: center;
           gap: 5px;
           align-items: center;
@@ -207,7 +211,7 @@ export default function ScoreboardPage() {
         }
 
         .col-header, .col-header-player {
-          font-size: 12px; 
+          font-size: 10px; 
           font-weight: bold;
           text-transform: uppercase;
           color: #fff;
@@ -220,18 +224,18 @@ export default function ScoreboardPage() {
 
         .player-row {
           display: grid;
-          grid-template-columns: [player] 1fr [kills] 40px [deaths] 40px [kd] 40px;
+          grid-template-columns: [player] 1fr [kills] 30px [deaths] 30px [kd] 30px;
           align-items: center;
           background: rgba(0,0,0,0.2);
           padding: 5px;
-          border-radius: 8px;
+          border-radius: 4px;
           gap: 5px;
         }
 
         .player-img {
-          width: 40px;
-          height: 40px;
-          border-radius: 4px;
+          width: 30px;
+          height: 30px;
+          border-radius: 2px;
           object-fit: contain; 
         }
 
@@ -245,7 +249,7 @@ export default function ScoreboardPage() {
 
         .player-name {
           font-weight: bold;
-          font-size: 12px; 
+          font-size: 10px; 
           text-transform: uppercase;
           white-space: nowrap;
           overflow: hidden;
@@ -255,7 +259,7 @@ export default function ScoreboardPage() {
 
         .stat-value {
           font-weight: bold;
-          font-size: 12px; 
+          font-size: 10px; 
           text-align: center;
           color: #fff;
         }
@@ -273,7 +277,7 @@ export default function ScoreboardPage() {
         }
 
         .round-history-title {
-          font-size: 12px; 
+          font-size: 10px; 
           font-weight: bold;
           text-transform: uppercase;
           color: #fff;
@@ -286,7 +290,7 @@ export default function ScoreboardPage() {
           justify-content: center; 
           align-items: center;
           flex-wrap: wrap;
-          gap: 3px; 
+          gap: 2px; 
           width: 100%;
         }
 
@@ -294,18 +298,17 @@ export default function ScoreboardPage() {
           width: 2px;
           background: #ccc;
           height: 40px; 
-          margin: 5px 10px; 
+          margin: 0 10px; 
           flex-shrink:0;
         }
 
         .round-wrapper {
           width: 30px; 
-          height: 50px;
+          height: 40px;
           display: flex;
           flex-direction: column;
           align-items: center;
           justify-content: center;
-          gap: 0;
           border-radius: 2px;
           background: #3a3357;
           flex-shrink: 0;
@@ -325,14 +328,15 @@ export default function ScoreboardPage() {
         }
 
         .round-icon {
-          width: 16px;
-          height: 16px;
+          width: 14px;
+          height: 14px;
           object-fit: contain;
         }
 
         .round-number {
-          font-size: 10px; 
+          font-size: 8px; 
           color: #fff;
+          margin-top: 1px;
         }
       `}</style>
     </div>
@@ -353,8 +357,8 @@ function renderPlayerRow(player) {
           className="player-img"
           src={`/players/${lowercaseSteamId}.png`}
           alt={name}
-          width={40}
-          height={40}
+          width={30}
+          height={30}
           onError={(e) => { e.currentTarget.src = '/players/idle.png'; }}
         />
         <div className="player-name">{name}</div>
@@ -367,7 +371,6 @@ function renderPlayerRow(player) {
 }
 
 function renderRoundHistory(roundWins) {
-  const totalRounds = 24; // до 24 раундов
   const firstHalfRounds = Array.from({length: 12}, (_,i)=>i+1);
   const secondHalfRounds = Array.from({length: 12}, (_,i)=>i+13);
 
@@ -388,7 +391,6 @@ function renderRoundHistory(roundWins) {
 
 function createRoundCell(roundNumber, result) {
   if (!result) {
-    // Пустой раунд
     return (
       <div className="round-wrapper empty" key={roundNumber}>
         <span className="round-number">{roundNumber}</span>
@@ -427,7 +429,7 @@ function createRoundCell(roundNumber, result) {
 
   return (
     <div className={`round-wrapper ${roundClass}`} key={roundNumber}>
-      <Image src={iconPath} alt={result} className="round-icon" width={16} height={16}/>
+      <Image src={iconPath} alt={result} className="round-icon" width={14} height={14}/>
       <span className="round-number">{roundNumber}</span>
     </div>
   );
