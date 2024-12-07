@@ -100,7 +100,7 @@ export default function ScoreboardPage() {
         body {
           margin: 0;
           padding: 0;
-          background: transparent; /* Прозрачный фон страницы */
+          background: transparent;
           font-family: Arial, sans-serif;
           color: #fff;
         }
@@ -275,17 +275,19 @@ export default function ScoreboardPage() {
           justify-content: space-between;
           width: 100%;
           position: relative;
+          /* Добавляем горизонтальный скролл при необходимости */
+          overflow-x: auto;
         }
 
-        /* Добавляем wrap, чтобы раунды не вылезали за контейнер */
         .first-half-rounds,
         .second-half-rounds {
           display: flex;
-          flex-wrap: wrap;
+          flex-wrap: nowrap;
           gap: 10px;
           align-items: center;
           justify-content: center;
           flex: 1;
+          /* Все в одну линию, без переноса */
         }
 
         .rounds-divider {
@@ -294,6 +296,7 @@ export default function ScoreboardPage() {
           height: 100px;
           margin: 0 30px;
           position: relative;
+          flex-shrink: 0;
         }
 
         .round-wrapper {
@@ -307,6 +310,7 @@ export default function ScoreboardPage() {
           border-radius: 2px;
           position: relative;
           background: #3a3357;
+          flex-shrink: 0;
         }
 
         .round-wrapper.ct-win {
