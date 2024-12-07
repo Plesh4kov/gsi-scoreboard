@@ -51,7 +51,7 @@ export default function ScoreboardPage() {
   let ctPlayers = playersArray.filter(p => p.team === 'CT');
   let tPlayers = playersArray.filter(p => p.team === 'T');
 
-  // Сортируем по убийствам для порядка
+  // Сортируем по убийствам
   ctPlayers.sort((a, b) => b.match_stats.kills - a.match_stats.kills);
   tPlayers.sort((a, b) => b.match_stats.kills - a.match_stats.kills);
 
@@ -71,7 +71,7 @@ export default function ScoreboardPage() {
         </div>
       </div>
 
-      {/* Заголовки для колонок: Kills, Deaths, KD */}
+      {/* Заголовки для колонок */}
       <div className="table-header-row">
         <div className="team-table-header ct-side">
           <span className="col-header">Kills</span>
@@ -107,7 +107,7 @@ export default function ScoreboardPage() {
           padding: 0;
           font-family: Arial, sans-serif;
           color: #fff;
-          background: transparent !important; /* Фон полностью прозрачный */
+          background: transparent; /* общий фон прозрачен */
         }
 
         .scoreboard-container {
@@ -118,7 +118,11 @@ export default function ScoreboardPage() {
           flex-direction: column;
           align-items: center;
           gap: 20px;
-          background: transparent !important; /* Прозрачный фон */
+
+          /* Добавляем полупрозрачный фон для контейнера */
+          background: rgba(0, 0, 0, 0.5);
+          border-radius: 8px;
+          padding: 20px;
         }
 
         .map-name {
@@ -135,7 +139,7 @@ export default function ScoreboardPage() {
           width: 100%;
           padding: 10px 20px;
           border-radius: 8px;
-          background: transparent; /* убираем фон */
+          background: transparent; 
         }
 
         .team-info-line {
@@ -205,12 +209,12 @@ export default function ScoreboardPage() {
           padding: 10px;
           border-radius: 8px;
           gap: 10px;
-          background: transparent; /* Прозрачный */
+          background: rgba(0,0,0,0.3); /* можно добавить легкий фон под каждого игрока */
         }
 
         .player-img {
           border-radius: 50%;
-          object-fit: contain; /* гарантируем масштабирование по размеру */
+          object-fit: contain;
         }
 
         .player-name {
@@ -240,7 +244,8 @@ export default function ScoreboardPage() {
           width: 100%;
           padding: 10px;
           margin-top: 10px;
-          background: transparent; /* Прозрачно */
+          background: rgba(0,0,0,0.3);
+          border-radius: 8px;
         }
 
         .round-history-title {
@@ -324,7 +329,6 @@ function renderRoundHistory(roundWins) {
   const firstHalfRounds = roundNumbers.filter(n => n <= 12);
   const secondHalfRounds = roundNumbers.filter(n => n > 12);
 
-  // Все в одну линию: сначала 1-12 раунды, разделитель, затем остальные
   return (
     <div className="round-history-line">
       {firstHalfRounds.map(roundNumber => createRoundIcon(roundNumber, roundWins[roundNumber.toString()]))}
