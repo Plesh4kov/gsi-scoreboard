@@ -42,7 +42,6 @@ export default function ScoreboardPage() {
   const tTeam = matchData.map.team_t;
   const allPlayers = matchData.allplayers;
 
-  // Преобразуем в массив, чтобы было удобно сортировать и отображать
   const playersArray = Object.entries(allPlayers).map(([steamid, playerData]) => ({
     steamid,
     ...playerData
@@ -51,26 +50,18 @@ export default function ScoreboardPage() {
   let ctPlayers = playersArray.filter(p => p.team === 'CT');
   let tPlayers = playersArray.filter(p => p.team === 'T');
 
-  // Сортируем по количеству убийств
   ctPlayers.sort((a, b) => b.match_stats.kills - a.match_stats.kills);
   tPlayers.sort((a, b) => b.match_stats.kills - a.match_stats.kills);
 
-  // Возьмём первые 5 игроков (если их больше)
   ctPlayers = ctPlayers.slice(0, 5);
   tPlayers = tPlayers.slice(0, 5);
 
-  const ctTeamName = ctTeam.name.toUpperCase();
-  const tTeamName = tTeam.name.toUpperCase();
-
-  // Заглушки ADR
   const ADR_PLACEHOLDER = 'N/A';
 
   return (
     <div className="scoreboard-container">
-      {/* Название карты сверху */}
       <div className="map-name">{matchData.map.name.toUpperCase()}</div>
 
-      {/* Блок с командами и счётом */}
       <div className="teams-line">
         <div className="team-info-line ct-side">
           <Image alt="CT Team" src={`/teams/${ctTeam.name}.png`} width={50} height={50}/>
@@ -83,7 +74,6 @@ export default function ScoreboardPage() {
         </div>
       </div>
 
-      {/* Заголовки столбцов */}
       <div className="table-header-row">
         <div className="team-table-header ct-side">
           <span className="col-header">Kills</span>
@@ -97,7 +87,6 @@ export default function ScoreboardPage() {
         </div>
       </div>
 
-      {/* Ряд игроков */}
       <div className="players-table-row">
         <div className="players-column ct-side">
           {ctPlayers.map(player => renderPlayerRow(player, ADR_PLACEHOLDER))}
@@ -250,7 +239,7 @@ export default function ScoreboardPage() {
 function renderPlayerRow(player, ADR_PLACEHOLDER) {
   const { name, steamid, match_stats } = player;
   const { kills, deaths } = match_stats;
-  const adr = ADR_PLACEHOLDER; // Заглушка для ADR
+  const adr = ADR_PLACEHOLDER;
   return (
     <div className="player-row" key={steamid}>
       <Image 
