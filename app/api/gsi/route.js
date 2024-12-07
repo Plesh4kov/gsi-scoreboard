@@ -15,3 +15,9 @@ export async function GET() {
     }
   });
 }
+
+export async function POST(request) {
+  const body = await request.json();
+  console.log("GSI Data Received:", body); // Логируем данные в консоли
+  return new Response(null, { status: 200 });
+}
