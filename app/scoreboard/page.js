@@ -54,7 +54,7 @@ export default function Page() {
   const totalRounds = 24;
   const rounds = Array.from({length: totalRounds}, (_, i) => i+1);
 
-  // Стили для отдельных элементов:
+  // Стили
   const colHeaderStyle = {
     fontSize:'20px',
     fontWeight:'bold',
@@ -103,8 +103,7 @@ export default function Page() {
   function renderPlayerRowADR(player) {
     const { name, steamid, match_stats } = player;
     const { kills, deaths } = match_stats;
-    const kd = deaths === 0 ? kills.toString() : (kills/deaths).toFixed(2);
-    const adr = 0; // Нет данных по ADR
+    const adr = 0; // Нет ADR данных
     const lowercaseSteamId = steamid.toString().toLowerCase();
 
     return (
@@ -131,7 +130,7 @@ export default function Page() {
     if (!result) return '#8C8259'; // empty
     const normalizedResult = result.toLowerCase();
     if (normalizedResult.startsWith('ct_win')) return '#847CA1'; // ct-win
-    // T wins fallback
+    // Если T-side win нужен другой цвет, можно поставить свою логику, но в изначальном коде не указано
     return 'rgba(38.25,38.25,38.25,0.56)';
   }
 
@@ -157,14 +156,16 @@ export default function Page() {
       fontFamily:'Blender Pro, sans-serif',
       color:'#fff'
     }}>
+      {/* MATCH STATS Title */}
       <div style={{
         width:'803px', height:'140px', left:'539px', top:'17px', position:'absolute',
-        textAlign:'center', color:'white', fontSize:'91px', fontFamily:'Blender Pro', fontWeight:'900', lineHeight:'75.13px', textTransform:'uppercase', wordWrap:'break-word'
+        textAlign:'center', color:'white', fontSize:'91px', fontFamily:'Blender Pro', fontWeight:'900', lineHeight:'75.13px', textTransform:'uppercase'
       }}>MATCH STATS</div>
 
+      {/* MAP: ... */}
       <div style={{
         width:'240px', height:'46px', left:'819px', top:'127px', position:'absolute',
-        textAlign:'center', color:'white', fontSize:'29px', fontFamily:'Blender Pro', fontWeight:'500', lineHeight:'23.94px', wordWrap:'break-word'
+        textAlign:'center', color:'white', fontSize:'29px', fontFamily:'Blender Pro', fontWeight:'500', lineHeight:'23.94px'
       }}>MAP: {mapName}</div>
 
       {/* Верхний прямоугольник */}
@@ -252,30 +253,30 @@ export default function Page() {
       {/* Названия команд и счет */}
       <div style={{
         width:'240px', height:'48px', left:'335px', top:'209px', position:'absolute',
-        color:'white', fontSize:'40px', fontFamily:'Blender Pro', fontWeight:'700', textTransform:'uppercase', lineHeight:'33.02px', wordWrap:'break-word'
+        color:'white', fontSize:'40px', fontFamily:'Blender Pro', fontWeight:'700', textTransform:'uppercase', lineHeight:'33.02px'
       }}>{ctTeam.name.toUpperCase()}</div>
 
       <div style={{
         width:'240px', height:'48px', left:'1300px', top:'209px', position:'absolute',
-        textAlign:'right', color:'white', fontSize:'40px', fontFamily:'Blender Pro', fontWeight:'700', textTransform:'uppercase', lineHeight:'33.02px', wordWrap:'break-word'
+        textAlign:'right', color:'white', fontSize:'40px', fontFamily:'Blender Pro', fontWeight:'700', textTransform:'uppercase', lineHeight:'33.02px'
       }}>{tTeam.name.toUpperCase()}</div>
 
       <div style={{
         width:'130.50px', left:'810px', top:'194px', position:'absolute',
-        textAlign:'center', color:'#847CA1', fontSize:'100px', fontFamily:'Blender Pro', fontWeight:'900', lineHeight:'82.56px', wordWrap:'break-word'
+        textAlign:'center', color:'#847CA1', fontSize:'100px', fontFamily:'Blender Pro', fontWeight:'900', lineHeight:'82.56px'
       }}>{ctTeam.score}</div>
 
       <div style={{
         left:'985px', top:'196px', position:'absolute',
-        textAlign:'center', color:'#EADAA5', fontSize:'100px', fontFamily:'Blender Pro', fontWeight:'900', lineHeight:'82.56px', wordWrap:'break-word'
+        textAlign:'center', color:'#EADAA5', fontSize:'100px', fontFamily:'Blender Pro', fontWeight:'900', lineHeight:'82.56px'
       }}>{tTeam.score}</div>
 
       <div style={{
         width:'20px',height:'55px', left:'933px', top:'190px', position:'absolute',
-        textAlign:'center', color:'#575170', fontSize:'99px', fontFamily:'Blender Pro', fontWeight:'900', lineHeight:'81.73px', wordWrap:'break-word'
+        textAlign:'center', color:'#575170', fontSize:'99px', fontFamily:'Blender Pro', fontWeight:'900', lineHeight:'81.73px'
       }}>:</div>
 
-      {/* Отрисовка раундов снизу */}
+      {/* Отрисовка 24 раундов по тому же принципу, что в вашем коде */}
       {rounds.map((roundNumber, i) => {
         const result = roundWins[roundNumber.toString()] || null;
         const baseLeft = 247;
@@ -311,9 +312,7 @@ export default function Page() {
         );
       })}
 
-      {/* Остальные static элементы (img, rectangles) можно оставить или убрать по желанию
-          Если нужно полностью идентично вашему коду - перенесите их так же
-      */}
+      {/* Остальные статические картинки и элементы из вашего кода вы можете добавить аналогично, используя те же координаты и стили */}
     </div>
   );
 }
