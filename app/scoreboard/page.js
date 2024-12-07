@@ -55,11 +55,10 @@ export default function ScoreboardPage() {
   ctPlayers.sort((a, b) => b.match_stats.kills - a.match_stats.kills);
   tPlayers.sort((a, b) => b.match_stats.kills - a.match_stats.kills);
 
-  // Находим игрока с наибольшим score в каждой команде
-  const maxCtScore = Math.max(...ctPlayers.map(p => p.match_stats.score));
-  const maxTScore = Math.max(...tPlayers.map(p => p.match_stats.score));
-
-  const RD_PLACEHOLDER = 'N/A';
+  // Найдём лучшего игрока по score среди всех игроков
+  const allPlayersCombined = [...ctPlayers, ...tPlayers];
+  allPlayersCombined.sort((a,b) => b.match_stats.score - a.match_stats.score);
+  const bestPlayerSteamid = allPlayersCombined[0].steamid; // только один лучший игрок
 
   return (
     <div className="scoreboard-container">
@@ -77,35 +76,33 @@ export default function ScoreboardPage() {
         </div>
       </div>
 
-      {/* Заголовки для колонок */}
+      {/* Заголовки для колонок: Kills, Deaths, KD */}
       <div className="table-header-row">
         <div className="team-table-header ct-side">
           <span className="col-header">Kills</span>
           <span className="col-header">Deaths</span>
           <span className="col-header">KD</span>
-          <span className="col-header">RD</span>
         </div>
         <div className="team-table-header t-side">
           <span className="col-header">Kills</span>
           <span className="col-header">Deaths</span>
           <span className="col-header">KD</span>
-          <span className="col-header">RD</span>
         </div>
       </div>
 
       {/* Игроки */}
       <div className="players-table-row">
         <div className="players-column ct-side">
-          {ctPlayers.map(player => renderPlayerRow(player, RD_PLACEHOLDER, player.match_stats.score === maxCtScore))}
+          {ctPlayers.map(player => renderPlayerRow(player, player.steamid === bestPlayerSteamid))}
         </div>
         <div className="players-column t-side">
-          {tPlayers.map(player => renderPlayerRow(player, RD_PLACEHOLDER, player.match_stats.score === maxTScore))}
+          {tPlayers.map(player => renderPlayerRow(player, player.steamid === bestPlayerSteamid))}
         </div>
       </div>
 
       {/* История раундов */}
       <div className="round-history-container">
-        <div className="round-history-title">Round History</div>
+        <div className="round-history-title">ROUND HISTORY</div>
         {renderRoundHistory(roundWins)}
       </div>
 
@@ -244,24 +241,25 @@ export default function ScoreboardPage() {
           text-align: center;
         }
 
+        /* Подсветка лучшего игрока */
         .best-player {
-          border: 2px solid #ffde59; /* подсветка лучшего игрока */
+          border: 2px solid #ffde59;
         }
 
         .round-history-container {
           width: 100%;
           background: #201c2c;
           border-radius: 8px;
-          padding: 20px;
-          margin-top: 20px;
+          padding: 10px;
+          margin-top: 10px;
         }
 
         .round-history-title {
-          font-size: 20px;
+          font-size: 16px;
           font-weight: bold;
           text-transform: uppercase;
           text-align: center;
-          margin-bottom: 20px;
+          margin-bottom: 10px;
           color: #fff;
         }
 
@@ -271,6 +269,7 @@ export default function ScoreboardPage() {
           display: flex;
           align-items: center;
           justify-content: space-between;
+          gap: 10px;
         }
 
         .half-rounds {
@@ -281,12 +280,10 @@ export default function ScoreboardPage() {
 
         .half-rounds:first-child {
           justify-content: flex-end;
-          margin-right: 20px; 
         }
 
         .half-rounds:last-child {
           justify-content: flex-start;
-          margin-left: 20px; 
         }
 
         .rounds-divider {
@@ -321,7 +318,7 @@ export default function ScoreboardPage() {
   );
 }
 
-function renderPlayerRow(player, rdPlaceholder, isBest) {
+function renderPlayerRow(player, isBest) {
   const { name, steamid, match_stats } = player;
   const { kills, deaths } = match_stats;
   const kd = deaths === 0 ? kills.toString() : (kills/deaths).toFixed(2);
@@ -341,7 +338,6 @@ function renderPlayerRow(player, rdPlaceholder, isBest) {
         <div className="stat-value">{kills}</div>
         <div className="stat-value">{deaths}</div>
         <div className="stat-value">{kd}</div>
-        <div className="stat-value">{rdPlaceholder}</div>
       </div>
     </div>
   );
@@ -369,38 +365,31 @@ function renderRoundHistory(roundWins) {
 
 function createRoundIcon(roundNumber, result) {
   let iconPath;
-  let teamColorClass;
 
   switch (result) {
     case 't_win_elimination':
         iconPath = 'icons/t_win_elimination.png';
-        teamColorClass = 't-win';
         break;
     case 't_win_bomb':
         iconPath = 'icons/t_win_bomb.png';
-        teamColorClass = 't-win';
         break;
     case 'ct_win_elimination':
         iconPath = 'icons/ct_win_elimination.png';
-        teamColorClass = 'ct-win';
         break;
     case 'ct_win_defuse':
         iconPath = 'icons/ct_win_defuse.png';
-        teamColorClass = 'ct-win';
         break;
     case 'ct_win_time':
         iconPath = 'icons/ct_win_time.png';
-        teamColorClass = 'ct-win';
         break;
     default:
         iconPath = 'icons/default.png';
-        teamColorClass = '';
         break;
   }
 
   return (
     <div className="round-wrapper" key={roundNumber}>
-      <Image src={`/${iconPath}`} alt={result} className={`round-icon ${teamColorClass}`} width={16} height={16} />
+      <Image src={`/${iconPath}`} alt={result} className="round-icon" width={16} height={16} />
       <span className="round-number">{roundNumber}</span>
     </div>
   );
