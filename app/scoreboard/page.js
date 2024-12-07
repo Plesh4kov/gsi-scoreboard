@@ -120,6 +120,7 @@ export default function ScoreboardPage() {
           font-size: 50px;
           font-weight: bold;
           text-transform: uppercase;
+          color: #fff;
           letter-spacing: 2px;
           margin: 0;
         }
@@ -272,7 +273,7 @@ export default function ScoreboardPage() {
         .round-history-container {
           width:100%;
           background: rgba(32,28,44,0.9);
-          border:1px solid #423769;
+          border: 1px solid #423769;
           border-radius:0;
           padding:5px;
           box-sizing:border-box;
@@ -315,7 +316,7 @@ export default function ScoreboardPage() {
         }
 
         .round-wrapper.t-win {
-          /* Если нужно иной цвет для T side */
+          /* цвет для T side win, если нужен другой */
         }
 
         .round-wrapper.empty {
@@ -407,19 +408,5 @@ function createRoundCell(roundNumber, result) {
       <Image src={iconPath} alt={result} className="round-icon" width={20} height={20}/>
       <span className="round-number">{roundNumber}</span>
     </div>
-  );
-}
-
-function renderRoundHistory(roundWins) {
-  const totalRounds = 24;
-  const rounds = Array.from({length: totalRounds}, (_, i) => i+1);
-
-  return (
-    <>
-      {rounds.map(roundNumber => {
-        const result = roundWins[roundNumber.toString()] || null;
-        return createRoundCell(roundNumber, result);
-      })}
-    </>
   );
 }
