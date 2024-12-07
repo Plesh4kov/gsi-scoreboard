@@ -41,6 +41,7 @@ export default function ScoreboardPage() {
   const ctTeam = matchData.map.team_ct;
   const tTeam = matchData.map.team_t;
   const allPlayers = matchData.allplayers;
+  const roundWins = matchData.map.round_wins || {};
 
   const playersArray = Object.entries(allPlayers).map(([steamid, playerData]) => ({
     steamid,
@@ -50,13 +51,15 @@ export default function ScoreboardPage() {
   let ctPlayers = playersArray.filter(p => p.team === 'CT');
   let tPlayers = playersArray.filter(p => p.team === 'T');
 
+  // Сортируем по количеству убийств для удобства
   ctPlayers.sort((a, b) => b.match_stats.kills - a.match_stats.kills);
   tPlayers.sort((a, b) => b.match_stats.kills - a.match_stats.kills);
 
-  ctPlayers = ctPlayers.slice(0, 5);
-  tPlayers = tPlayers.slice(0, 5);
+  // Находим игрока с наибольшим score в каждой команде
+  const maxCtScore = Math.max(...ctPlayers.map(p => p.match_stats.score));
+  const maxTScore = Math.max(...tPlayers.map(p => p.match_stats.score));
 
-  const ADR_PLACEHOLDER = 'N/A';
+  const RD_PLACEHOLDER = 'N/A';
 
   return (
     <div className="scoreboard-container">
@@ -74,26 +77,36 @@ export default function ScoreboardPage() {
         </div>
       </div>
 
+      {/* Заголовки для колонок */}
       <div className="table-header-row">
         <div className="team-table-header ct-side">
           <span className="col-header">Kills</span>
           <span className="col-header">Deaths</span>
-          <span className="col-header">ADR</span>
+          <span className="col-header">KD</span>
+          <span className="col-header">RD</span>
         </div>
         <div className="team-table-header t-side">
           <span className="col-header">Kills</span>
           <span className="col-header">Deaths</span>
-          <span className="col-header">ADR</span>
+          <span className="col-header">KD</span>
+          <span className="col-header">RD</span>
         </div>
       </div>
 
+      {/* Игроки */}
       <div className="players-table-row">
         <div className="players-column ct-side">
-          {ctPlayers.map(player => renderPlayerRow(player, ADR_PLACEHOLDER))}
+          {ctPlayers.map(player => renderPlayerRow(player, RD_PLACEHOLDER, player.match_stats.score === maxCtScore))}
         </div>
         <div className="players-column t-side">
-          {tPlayers.map(player => renderPlayerRow(player, ADR_PLACEHOLDER))}
+          {tPlayers.map(player => renderPlayerRow(player, RD_PLACEHOLDER, player.match_stats.score === maxTScore))}
         </div>
+      </div>
+
+      {/* История раундов */}
+      <div className="round-history-container">
+        <div className="round-history-title">Round History</div>
+        {renderRoundHistory(roundWins)}
       </div>
 
       <style jsx global>{`
@@ -163,7 +176,6 @@ export default function ScoreboardPage() {
           display: flex;
           justify-content: space-between;
           width: 100%;
-          padding: 10px 0;
         }
 
         .team-table-header {
@@ -231,17 +243,92 @@ export default function ScoreboardPage() {
           min-width: 40px;
           text-align: center;
         }
+
+        .best-player {
+          border: 2px solid #ffde59; /* подсветка лучшего игрока */
+        }
+
+        .round-history-container {
+          width: 100%;
+          background: #201c2c;
+          border-radius: 8px;
+          padding: 20px;
+          margin-top: 20px;
+        }
+
+        .round-history-title {
+          font-size: 20px;
+          font-weight: bold;
+          text-transform: uppercase;
+          text-align: center;
+          margin-bottom: 20px;
+          color: #fff;
+        }
+
+        .halves-container {
+          position: relative;
+          width: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+        }
+
+        .half-rounds {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 10px;
+        }
+
+        .half-rounds:first-child {
+          justify-content: flex-end;
+          margin-right: 20px; 
+        }
+
+        .half-rounds:last-child {
+          justify-content: flex-start;
+          margin-left: 20px; 
+        }
+
+        .rounds-divider {
+          position: absolute;
+          left: 50%;
+          transform: translateX(-50%);
+          width: 1px;
+          background: #ccc;
+          height: 30px;
+        }
+
+        .round-wrapper {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+        }
+
+        .round-icon {
+          width: 16px;
+          height: 16px;
+          object-fit: contain;
+          margin: 0 3px;
+        }
+
+        .round-number {
+          font-size: 10px;
+          color: #ccc;
+          margin-top: 2px;
+        }
       `}</style>
     </div>
   );
 }
 
-function renderPlayerRow(player, ADR_PLACEHOLDER) {
+function renderPlayerRow(player, rdPlaceholder, isBest) {
   const { name, steamid, match_stats } = player;
   const { kills, deaths } = match_stats;
-  const adr = ADR_PLACEHOLDER;
+  const kd = deaths === 0 ? kills.toString() : (kills/deaths).toFixed(2);
+  const rowClass = isBest ? 'player-row best-player' : 'player-row';
+
   return (
-    <div className="player-row" key={steamid}>
+    <div className={rowClass} key={steamid}>
       <Image 
         className="player-img"
         src={`/players/${steamid}.jpg`} 
@@ -253,8 +340,68 @@ function renderPlayerRow(player, ADR_PLACEHOLDER) {
       <div className="player-stats">
         <div className="stat-value">{kills}</div>
         <div className="stat-value">{deaths}</div>
-        <div className="stat-value">{adr}</div>
+        <div className="stat-value">{kd}</div>
+        <div className="stat-value">{rdPlaceholder}</div>
       </div>
+    </div>
+  );
+}
+
+function renderRoundHistory(roundWins) {
+  const roundNumbers = Object.keys(roundWins).map(n => parseInt(n)).sort((a,b) => a - b);
+  if (roundNumbers.length === 0) return null;
+
+  const firstHalfRounds = roundNumbers.filter(n => n <= 12);
+  const secondHalfRounds = roundNumbers.filter(n => n > 12);
+
+  return (
+    <div className="halves-container">
+      <div className="half-rounds">
+        {firstHalfRounds.map(roundNumber => createRoundIcon(roundNumber, roundWins[roundNumber.toString()]))}
+      </div>
+      <div className="rounds-divider"></div>
+      <div className="half-rounds">
+        {secondHalfRounds.map(roundNumber => createRoundIcon(roundNumber, roundWins[roundNumber.toString()]))}
+      </div>
+    </div>
+  );
+}
+
+function createRoundIcon(roundNumber, result) {
+  let iconPath;
+  let teamColorClass;
+
+  switch (result) {
+    case 't_win_elimination':
+        iconPath = 'icons/t_win_elimination.png';
+        teamColorClass = 't-win';
+        break;
+    case 't_win_bomb':
+        iconPath = 'icons/t_win_bomb.png';
+        teamColorClass = 't-win';
+        break;
+    case 'ct_win_elimination':
+        iconPath = 'icons/ct_win_elimination.png';
+        teamColorClass = 'ct-win';
+        break;
+    case 'ct_win_defuse':
+        iconPath = 'icons/ct_win_defuse.png';
+        teamColorClass = 'ct-win';
+        break;
+    case 'ct_win_time':
+        iconPath = 'icons/ct_win_time.png';
+        teamColorClass = 'ct-win';
+        break;
+    default:
+        iconPath = 'icons/default.png';
+        teamColorClass = '';
+        break;
+  }
+
+  return (
+    <div className="round-wrapper" key={roundNumber}>
+      <Image src={`/${iconPath}`} alt={result} className={`round-icon ${teamColorClass}`} width={16} height={16} />
+      <span className="round-number">{roundNumber}</span>
     </div>
   );
 }
